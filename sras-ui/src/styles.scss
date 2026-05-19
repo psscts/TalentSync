@@ -1,0 +1,110 @@
+/* Global styles */
+@use '@angular/material' as mat;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Fix transparent overlays — ensure solid backgrounds */
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel,
+.mat-mdc-menu-panel,
+.cdk-overlay-pane .mat-mdc-select-panel {
+  background: #ffffff !important;
+}
+
+.mat-mdc-card {
+  background: #ffffff !important;
+}
+
+.mat-mdc-paginator {
+  background: #ffffff !important;
+
+  .mat-mdc-paginator-page-size-select {
+    margin: 0 8px;
+    width: 80px;
+  }
+
+  .mat-mdc-select-trigger {
+    padding: 0 8px;
+  }
+
+  .mat-mdc-paginator-page-size-value {
+    margin: 0 8px;
+  }
+
+  .mat-mdc-select-value {
+    padding-right: 4px;
+  }
+}
+
+.mat-datepicker-content,
+.mat-datepicker-content .mat-calendar {
+  background: #ffffff !important;
+}
+
+.cdk-overlay-pane {
+  .mat-datepicker-content {
+    background: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 16px;
+  min-height: calc(100vh - 64px);
+}
+
+.form-card {
+  width: 100%;
+  max-width: 480px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mt-16 { margin-top: 16px; }
+.mb-16 { margin-bottom: 16px; }
+.mt-24 { margin-top: 24px; }
+
+.table-container {
+  overflow-x: auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+mat-table {
+  width: 100%;
+}
+
+.score-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 13px;
+
+  &.high   { background: #e8f5e9; color: #2e7d32; }
+  &.medium { background: #fff3e0; color: #e65100; }
+  &.low    { background: #ffebee; color: #c62828; }
+}
+
+.filter-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}

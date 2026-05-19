@@ -1,0 +1,22 @@
+.no-data {
+  text-align: center;
+  padding: 24px;
+  color: #757575;
+}
+
+table {
+  min-width: 900px;
+}
+
+:host ::ng-deep .mat-mdc-paginator {
+  border-top: 1px solid #e0e0e0;
+  padding: 4px 8px;
+  font-size: 13px;
+
+  .mat-mdc-paginator-container {
+    justify-content: flex-end;
+    gap: 8px;
+    min-height: 48px;
+  }
+}
+

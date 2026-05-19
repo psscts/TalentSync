@@ -1,0 +1,31 @@
+# --- OS Metadata ---
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# --- Build and Dependency Folders (Recursive) ---
+# Adding a / at the end ensures it matches folders only
+node_modules/
+bin/
+obj/
+dist/
+out/
+build/
+target/
+
+# --- Environment & Secrets ---
+.env
+*.pem
+*.key
+.venv/
+env/
+venv/
+
+# --- IDE & Editor Folders ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.settings/

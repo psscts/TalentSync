@@ -1,0 +1,294 @@
+﻿<div class="page-container">
+
+  @if (loading) {
+    <div class="loading-center">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading your profile...</p>
+    </div>
+
+  } @else if (viewMode && existingEmployee) {
+
+    <!-- ======= VIEW MODE ======= -->
+    <div class="profile-header">
+      <mat-icon class="profile-avatar">account_circle</mat-icon>
+      <div class="profile-title">
+        <h2>{{ existingEmployee.name }}</h2>
+        <p class="sub">{{ existingEmployee.employeeId }} &middot; {{ existingEmployee.experienceLevel }}</p>
+      </div>
+      <div class="score-badge">
+        Score: <strong>{{ existingEmployee.employeeScore | number:'1.1-1' }}</strong>
+      </div>
+      <button mat-raised-button color="primary" (click)="startEdit()">
+        <mat-icon>edit</mat-icon> Update Profile
+      </button>
+    </div>
+
+    <mat-card class="view-card">
+      <mat-card-content>
+
+        <h3 class="section-title">Basic Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Employee ID</span>
+            <span class="value">{{ existingEmployee.employeeId }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Full Name</span>
+            <span class="value">{{ existingEmployee.name }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Joining Date</span>
+            <span class="value">{{ existingEmployee.joiningDate || '&mdash;' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Experience Level</span>
+            <span class="value">{{ existingEmployee.experienceLevel }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Years of Experience</span>
+            <span class="value">{{ existingEmployee.yearsOfExperience }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Availability</span>
+            <span class="value avail-chip avail-{{ existingEmployee.availabilityStatus }}">
+              {{ existingEmployee.availabilityStatus }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="label">Preferred Location</span>
+            <span class="value">{{ existingEmployee.preferredLocation || '&mdash;' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Expected Salary (Rs.)</span>
+            <span class="value">{{ existingEmployee.expectedSalary | number:'1.0-0' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Previous Ratings</span>
+            <span class="value">{{ existingEmployee.previousRatings }}</span>
+          </div>
+        </div>
+
+        @if (existingEmployee.skills?.length) {
+          <mat-divider class="mt-16 mb-16"></mat-divider>
+          <h3 class="section-title">Skills</h3>
+          <div class="chip-list">
+            @for (s of existingEmployee.skills; track s.name) {
+              <span class="skill-chip">{{ s.name }} <small>({{ s.proficiencyLevel }})</small></span>
+            }
+          </div>
+        }
+
+        @if (existingEmployee.certifications?.length) {
+          <mat-divider class="mt-16 mb-16"></mat-divider>
+          <h3 class="section-title">Certifications</h3>
+          <div class="cert-list">
+            @for (c of existingEmployee.certifications; track c.name) {
+              <div class="cert-item">
+                <mat-icon class="cert-icon">verified</mat-icon>
+                <span>{{ c.name }}</span>
+                @if (c.issuingOrganization) {
+                  <small class="cert-org">&mdash; {{ c.issuingOrganization }}</small>
+                }
+                @if (c.score) {
+                  <span class="cert-score">{{ c.score }}/100</span>
+                }
+              </div>
+            }
+          </div>
+        }
+
+      </mat-card-content>
+    </mat-card>
+
+  } @else {
+
+    <!-- ======= EDIT / CREATE MODE ======= -->
+    <div class="profile-header">
+      <mat-icon class="profile-avatar">account_circle</mat-icon>
+      <div class="profile-title">
+        <h2>{{ existingEmployee ? 'Edit My Profile' : 'Create Your Profile' }}</h2>
+        <p class="sub">{{ existingEmployee ? 'Update your details, skills and certifications.' : 'Fill in your details to get started.' }}</p>
+      </div>
+      @if (existingEmployee) {
+        <div class="score-badge">
+          Score: <strong>{{ existingEmployee.employeeScore | number:'1.1-1' }}</strong>
+        </div>
+      }
+    </div>
+
+    <mat-card>
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+
+          <h3 class="section-title">Basic Information</h3>
+          <div class="form-row">
+            <mat-form-field>
+              <mat-label>Employee ID</mat-label>
+              <input matInput formControlName="employeeId">
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Full Name</mat-label>
+              <input matInput formControlName="name">
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Joining Date</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="joiningDate" placeholder="Select date">
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field>
+              <mat-label>Experience Level</mat-label>
+              <mat-select formControlName="experienceLevel">
+                <mat-option value="JUNIOR">Junior</mat-option>
+                <mat-option value="MID">Mid</mat-option>
+                <mat-option value="SENIOR">Senior</mat-option>
+                <mat-option value="LEAD">Lead</mat-option>
+              </mat-select>
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Years of Experience</mat-label>
+              <input matInput type="number" formControlName="yearsOfExperience" min="0">
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Availability</mat-label>
+              <mat-select formControlName="availabilityStatus">
+                <mat-option value="AVAILABLE">Available</mat-option>
+                <mat-option value="PARTIALLY_AVAILABLE">Partially Available</mat-option>
+                <mat-option value="UNAVAILABLE">Unavailable</mat-option>
+              </mat-select>
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field>
+              <mat-label>Preferred Location</mat-label>
+              <mat-select formControlName="preferredLocation">
+                <mat-option value="Bangalore">Bangalore</mat-option>
+                <mat-option value="Hyderabad">Hyderabad</mat-option>
+                <mat-option value="Chennai">Chennai</mat-option>
+                <mat-option value="Pune">Pune</mat-option>
+                <mat-option value="Mumbai">Mumbai</mat-option>
+                <mat-option value="Delhi">Delhi</mat-option>
+                <mat-option value="Kolkata">Kolkata</mat-option>
+                <mat-option value="Noida">Noida</mat-option>
+                <mat-option value="Gurgaon">Gurgaon</mat-option>
+                <mat-option value="Remote">Remote</mat-option>
+              </mat-select>
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Expected Salary (Rs.)</mat-label>
+              <input matInput type="number" formControlName="expectedSalary" min="0">
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Previous Ratings (1-5)</mat-label>
+              <mat-select formControlName="previousRatings">
+                <mat-option [value]="1">1</mat-option>
+                <mat-option [value]="2">2</mat-option>
+                <mat-option [value]="3">3</mat-option>
+                <mat-option [value]="4">4</mat-option>
+                <mat-option [value]="5">5</mat-option>
+              </mat-select>
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-divider class="mt-16 mb-16"></mat-divider>
+
+          <div class="section-header">
+            <h3 class="section-title">Skills</h3>
+            <button mat-stroked-button type="button" (click)="addSkill()">
+              <mat-icon>add</mat-icon> Add Skill
+            </button>
+          </div>
+          <div formArrayName="skills">
+            @for (ctrl of skills.controls; track ctrl) {
+              <div [formGroupName]="$index" class="form-row sub-row">
+                <mat-form-field>
+                  <mat-label>Skill Name</mat-label>
+                  <input matInput formControlName="name" placeholder="e.g. Java, Angular">
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Proficiency</mat-label>
+                  <mat-select formControlName="proficiencyLevel">
+                    <mat-option value="BEGINNER">Beginner</mat-option>
+                    <mat-option value="INTERMEDIATE">Intermediate</mat-option>
+                    <mat-option value="ADVANCED">Advanced</mat-option>
+                    <mat-option value="EXPERT">Expert</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <button mat-icon-button color="warn" type="button" (click)="removeSkill($index)" matTooltip="Remove">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            }
+            @if (skills.length === 0) {
+              <p class="empty-hint">No skills added yet.</p>
+            }
+          </div>
+
+          <mat-divider class="mt-16 mb-16"></mat-divider>
+
+          <div class="section-header">
+            <h3 class="section-title">Certifications</h3>
+            <button mat-stroked-button type="button" (click)="addCert()">
+              <mat-icon>add</mat-icon> Add Certification
+            </button>
+          </div>
+          <div formArrayName="certifications">
+            @for (ctrl of certifications.controls; track ctrl) {
+              <div [formGroupName]="$index" class="form-row sub-row">
+                <mat-form-field>
+                  <mat-label>Cert ID</mat-label>
+                  <input matInput formControlName="certificateId">
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Certification Name</mat-label>
+                  <input matInput formControlName="name" placeholder="e.g. AWS Certified">
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Issuing Organization</mat-label>
+                  <input matInput formControlName="issuingOrganization">
+                </mat-form-field>
+                <mat-form-field class="score-field">
+                  <mat-label>Score (0-100)</mat-label>
+                  <input matInput type="number" formControlName="score">
+                </mat-form-field>
+                <button mat-icon-button color="warn" type="button" (click)="removeCert($index)" matTooltip="Remove">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            }
+            @if (certifications.length === 0) {
+              <p class="empty-hint">No certifications added yet.</p>
+            }
+          </div>
+
+          <mat-divider class="mt-16 mb-16"></mat-divider>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="saving">
+              @if (saving) { <mat-spinner diameter="20"></mat-spinner> }
+              @else { {{ existingEmployee ? 'Save Changes' : 'Create Profile' }} }
+            </button>
+            @if (existingEmployee) {
+              <button mat-stroked-button type="button" (click)="cancelEdit()">Cancel</button>
+            }
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+  }
+</div>

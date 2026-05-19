@@ -1,0 +1,44 @@
+{
+  "/auth": {
+    "target": "http://localhost:8081",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/auth/**": {
+    "target": "http://localhost:8081",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/employees": {
+    "target": "http://localhost:8081",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/employees/**": {
+    "target": "http://localhost:8081",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/projects": {
+    "target": "http://localhost:8081",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/projects/**": {
+    "target": "http://localhost:8081",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/matching": {
+    "target": "http://localhost:8081",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/matching/**": {
+    "target": "http://localhost:8081",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

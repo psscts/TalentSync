@@ -1,0 +1,28 @@
+.subtitle {
+  color: #757575;
+  margin-bottom: 16px;
+}
+
+.search-card {
+  max-width: 700px;
+}
+
+.search-form {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  mat-form-field { flex: 2; min-width: 200px; }
+  .k-field { flex: 0.5; min-width: 80px; }
+}
+
+.no-data {
+  text-align: center;
+  padding: 24px;
+  color: #757575;
+}
+
+table {
+  min-width: 900px;
+}
