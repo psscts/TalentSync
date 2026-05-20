@@ -11,8 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ToastService } from '../../services/toast.service';
 import { MatchingService } from '../../services/matching.service';
 import { ProjectService } from '../../services/project.service';
 import { MatchingResult } from '../../models/matching.model';
@@ -36,7 +36,6 @@ type MatchingRow = MatchingResult & { rank: number; assigned: boolean };
     MatCardModule,
     MatIconModule,
     MatProgressBarModule,
-    MatSnackBarModule,
     MatTooltipModule
   ],
   templateUrl: './matching-results.component.html',
@@ -64,7 +63,7 @@ export class MatchingResultsComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private matchingService: MatchingService,
     private projectService: ProjectService,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -90,7 +89,7 @@ export class MatchingResultsComponent implements OnInit, AfterViewInit {
       },
       error: err => {
         this.loading = false;
-        this.snackBar.open(err.error?.message ?? 'Matching failed', 'Close', { duration: 3000 });
+        this.toast.error(err.error?.message ?? 'Matching failed');
       }
     });
   }
@@ -103,12 +102,12 @@ export class MatchingResultsComponent implements OnInit, AfterViewInit {
         row.assigned = true;
         row.availabilityStatus = 'UNAVAILABLE';
         // Refresh the table data to remove this employee from future searches
-        this.snackBar.open(`${row.name} assigned successfully`, 'Close', { duration: 3000 });
+        this.toast.success(`${row.name} assigned successfully`);
         // Re-search to hide the newly assigned employee
         this.search();
       },
       error: err => {
-        this.snackBar.open(err.error?.message ?? 'Assignment failed', 'Close', { duration: 3000 });
+        this.toast.error(err.error?.message ?? 'Assignment failed');
       }
     });
   }

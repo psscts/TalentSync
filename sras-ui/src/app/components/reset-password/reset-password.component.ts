@@ -6,9 +6,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -21,14 +22,16 @@ import { AuthService } from '../../services/auth.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss'
 })
 export class ResetPasswordComponent {
   loading = false;
+  showPassword = false;
+  showConfirm = false;
 
   form = this.fb.group({
     token: ['', Validators.required],
@@ -44,7 +47,7 @@ export class ResetPasswordComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -60,12 +63,12 @@ export class ResetPasswordComponent {
     this.authService.resetPassword({ token: token!, newPassword: newPassword! }).subscribe({
       next: () => {
         this.loading = false;
-        this.snackBar.open('Password reset successful! Please login.', 'Close', { duration: 4000 });
+        this.toast.success('Password reset successful! Please login.', 4000);
         this.router.navigate(['/login']);
       },
       error: err => {
         this.loading = false;
-        this.snackBar.open(err.error?.message ?? 'Reset failed', 'Close', { duration: 3000 });
+        this.toast.error(err.error?.message ?? 'Reset failed');
       }
     });
   }

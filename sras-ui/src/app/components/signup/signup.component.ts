@@ -9,8 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-signup',
@@ -25,8 +25,7 @@ import { AuthService } from '../../services/auth.service';
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatProgressSpinnerModule
   ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
@@ -48,7 +47,7 @@ export class SignupComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   submit(): void {
@@ -57,12 +56,12 @@ export class SignupComponent {
     this.authService.signup(this.form.value as any).subscribe({
       next: (res) => {
         this.loading = false;
-        this.snackBar.open('Account created!', 'Close', { duration: 3000 });
+        this.toast.success('Account created!');
         this.router.navigate([res.role === 'PROJECT_MANAGER' ? '/projects' : '/employees']);
       },
       error: err => {
         this.loading = false;
-        this.snackBar.open(err.error?.message ?? 'Signup failed', 'Close', { duration: 3000 });
+        this.toast.error(err.error?.message ?? 'Signup failed');
       }
     });
   }

@@ -16,6 +16,39 @@ html, body {
   background: #ffffff !important;
 }
 
+/* Comprehensive fix for MDC select/autocomplete overlay transparency */
+.cdk-overlay-container {
+  .mat-mdc-select-panel,
+  .mat-mdc-autocomplete-panel {
+    background: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
+    border-radius: 4px !important;
+
+    /* The inner MDC list */
+    .mdc-list,
+    .mat-mdc-option {
+      background: #ffffff !important;
+    }
+
+    .mat-mdc-option {
+      color: rgba(0, 0, 0, 0.87) !important;
+
+      &:hover:not(.mdc-list-item--disabled),
+      &.mat-mdc-option-active {
+        background: rgba(63, 81, 181, 0.08) !important;
+      }
+
+      &.mdc-list-item--selected:not(.mat-mdc-option-multiple) {
+        background: rgba(63, 81, 181, 0.12) !important;
+      }
+
+      .mdc-list-item__primary-text {
+        color: rgba(0, 0, 0, 0.87) !important;
+      }
+    }
+  }
+}
+
 .mat-mdc-card {
   background: #ffffff !important;
 }
@@ -109,11 +142,69 @@ mat-table {
   margin-bottom: 16px;
 }
 
-/* Snackbar "Close" action button — keep text visible on hover */
-.mat-mdc-snack-bar-container .mat-mdc-button.mat-mdc-snack-bar-action:hover {
-  background-color: rgba(255, 255, 255, 0.15) !important;
+/* ── Toast notifications ── */
+.mat-mdc-snack-bar-container {
+  /* Opaque surface for all toasts */
+  .mdc-snackbar__surface {
+    border-radius: 8px !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25) !important;
+    min-width: 300px !important;
+    opacity: 1 !important;
+  }
 
-  .mdc-button__label {
+  .mdc-snackbar__label {
     color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+  }
+
+  /* Action (Close) button */
+  .mat-mdc-button.mat-mdc-snack-bar-action {
+    color: rgba(255, 255, 255, 0.85) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.15) !important;
+
+      .mdc-button__label {
+        color: #ffffff !important;
+      }
+    }
+  }
+
+  /* Success — green */
+  &.toast-success .mdc-snackbar__surface {
+    background: #2e7d32 !important;
+  }
+
+  /* Error — red */
+  &.toast-error .mdc-snackbar__surface {
+    background: #c62828 !important;
+  }
+
+  /* Info — blue */
+  &.toast-info .mdc-snackbar__surface {
+    background: #1565c0 !important;
+  }
+
+  /* Fallback (unclassed snackbar) */
+  &:not(.toast-success):not(.toast-error):not(.toast-info) .mdc-snackbar__surface {
+    background: #323232 !important;
+  }
+}
+
+/* ── Material Tooltip — solid opaque style ── */
+.mat-mdc-tooltip {
+  .mdc-tooltip__surface {
+    background-color: #37474f !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    padding: 6px 10px !important;
+    border-radius: 6px !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+    max-width: 260px !important;
+    line-height: 1.4 !important;
+    white-space: normal !important;
   }
 }
