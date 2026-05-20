@@ -1,52 +1,154 @@
-<section class="home-shell">
-  <mat-card class="hero-card">
-    <div class="hero-content">
-      <p class="eyebrow">Welcome to TalentSync</p>
-      <h1>Aligning the right talent to the right opportunities.</h1>
-      <p class="value-prop">
-        TalentSync helps teams accelerate staffing decisions with transparent matching,
-        skill-based insights, and role-ready talent recommendations.
-      </p>
-      <p class="supporting-copy">
-        From project demand to ranked matches, every step is designed to reduce manual effort
-        and improve confidence in staffing outcomes.
-      </p>
+<div class="home-page">
 
-      <div class="cta-row">
-        <a mat-raised-button color="primary" routerLink="/login" class="cta-primary">
-          Get Started
-        </a>
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Smart Resource Allocation System
+      </div>
+      <h1 class="hero-heading">
+        Place the right talent<br>
+        <span class="heading-accent">on the right project.</span>
+      </h1>
+      <p class="hero-sub">
+        TalentSync matches employees to project requirements using skill scores,
+        certifications, availability and experience — giving managers ranked,
+        data-driven recommendations instantly.
+      </p>
+      <div class="hero-actions">
+        <a mat-raised-button routerLink="/login" class="btn-primary">Get Started</a>
+        <a mat-stroked-button routerLink="/signup" class="btn-outline">Create Account</a>
       </div>
 
-      <div class="highlights" aria-label="TalentSync benefits">
-        <div class="highlight-item">
-          <mat-icon>tune</mat-icon>
-          <span>Skill-first matching logic</span>
-        </div>
-        <div class="highlight-item">
-          <mat-icon>insights</mat-icon>
-          <span>Transparent match insights</span>
-        </div>
-        <div class="highlight-item">
-          <mat-icon>bolt</mat-icon>
-          <span>Faster staffing cycles</span>
-        </div>
-      </div>
+     
     </div>
 
-    <div class="hero-accent" aria-hidden="true">
-      <div class="accent-badge">
+    <div class="hero-visual" aria-hidden="true">
+      <div class="visual-card vc-top">
+        <mat-icon>group_work</mat-icon>
+        <div>
+          <strong>Best Match Found</strong>
+          <span>Score 92.4 · Available</span>
+        </div>
+      </div>
+      <div class="visual-orb">
         <mat-icon>hub</mat-icon>
       </div>
-      <div class="accent-metric">
-        <strong>Smart Match</strong>
-        <span>people + projects in sync</span>
-      </div>
-      <div class="accent-lines">
-        <span></span>
-        <span></span>
-        <span></span>
+      <div class="visual-card vc-bottom">
+        <mat-icon>leaderboard</mat-icon>
+        <div>
+          <strong>Ranked #1</strong>
+          <span>Senior · Full Stack</span>
+        </div>
       </div>
     </div>
-  </mat-card>
-</section>
+  </section>
+
+  <!-- ── FEATURES ── -->
+  <section class="features">
+    <div class="section-label">What TalentSync does</div>
+    <h2 class="section-heading">Everything you need to staff smarter</h2>
+
+    <div class="feature-grid">
+
+      <div class="feature-card fc-employee">
+        <div class="fc-icon-wrap">
+          <mat-icon>person</mat-icon>
+        </div>
+        <h3>Employee Profiles</h3>
+        <p>Employees build rich profiles with skills, certifications, experience level,
+           availability and preferred location — all used in matching.</p>
+        <ul class="fc-list">
+          <li><mat-icon>check</mat-icon>Skills with proficiency levels</li>
+          <li><mat-icon>check</mat-icon>Certifications & scores</li>
+          <li><mat-icon>check</mat-icon>Availability status tracking</li>
+        </ul>
+      </div>
+
+      <div class="feature-card fc-project">
+        <div class="fc-icon-wrap">
+          <mat-icon>folder_special</mat-icon>
+        </div>
+        <h3>Project Requirements</h3>
+        <p>Managers define projects with roles, required skills, experience levels,
+           salary budgets, locations and open positions.</p>
+        <ul class="fc-list">
+          <li><mat-icon>check</mat-icon>Multi-role project support</li>
+          <li><mat-icon>check</mat-icon>Location & work-mode filters</li>
+          <li><mat-icon>check</mat-icon>Certification requirements</li>
+        </ul>
+      </div>
+
+      <div class="feature-card fc-matching">
+        <div class="fc-icon-wrap">
+          <mat-icon>analytics</mat-icon>
+        </div>
+        <h3>Smart Matching Engine</h3>
+        <p>A composite scoring algorithm ranks employees against project needs.
+           Filter by top-K results and assign directly from the results table.</p>
+        <ul class="fc-list">
+          <li><mat-icon>check</mat-icon>Score-based ranked results</li>
+          <li><mat-icon>check</mat-icon>One-click assignment</li>
+          <li><mat-icon>check</mat-icon>Configurable top-K query</li>
+        </ul>
+      </div>
+
+      <div class="feature-card fc-ranking">
+        <div class="fc-icon-wrap">
+          <mat-icon>leaderboard</mat-icon>
+        </div>
+        <h3>Employee Rankings</h3>
+        <p>A live leaderboard ranks all employees by their composite score, with
+           search, level filters and sortable columns for instant insights.</p>
+        <ul class="fc-list">
+          <li><mat-icon>check</mat-icon>Composite employee score</li>
+          <li><mat-icon>check</mat-icon>Filter by experience level</li>
+          <li><mat-icon>check</mat-icon>Paginated sortable table</li>
+        </ul>
+      </div>
+
+      <div class="feature-card fc-dashboard">
+        <div class="fc-icon-wrap">
+          <mat-icon>dashboard</mat-icon>
+        </div>
+        <h3>Manager Dashboard</h3>
+        <p>An at-a-glance view of every project — staffing progress, assigned
+           employees, assignment dates and one-click unassign controls.</p>
+        <ul class="fc-list">
+          <li><mat-icon>check</mat-icon>Staffing progress bars</li>
+          <li><mat-icon>check</mat-icon>Per-project employee tables</li>
+          <li><mat-icon>check</mat-icon>Unassign with availability reset</li>
+        </ul>
+      </div>
+
+      <div class="feature-card fc-my-dashboard">
+        <div class="fc-icon-wrap">
+          <mat-icon>work</mat-icon>
+        </div>
+        <h3>My Dashboard</h3>
+        <p>Employees see their active project assignments with role details,
+           skill requirements and project timelines — all in one place.</p>
+        <ul class="fc-list">
+          <li><mat-icon>check</mat-icon>Active project assignments</li>
+          <li><mat-icon>check</mat-icon>Role & skill breakdown</li>
+          <li><mat-icon>check</mat-icon>Start & end date visibility</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── FOOTER CTA ── -->
+  <section class="cta-banner">
+    <div class="cta-content">
+      <h2>Ready to streamline your staffing?</h2>
+      <p>Create an account and start matching talent to projects today.</p>
+      <div class="cta-actions">
+        <a mat-raised-button routerLink="/signup" class="btn-primary">Sign Up Free</a>
+        <a mat-button routerLink="/login" class="btn-text">Already have an account? Sign In →</a>
+      </div>
+    </div>
+  </section>
+
+</div>

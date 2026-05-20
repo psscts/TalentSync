@@ -1,45 +1,399 @@
-.no-data {
-  text-align: center;
-  padding: 24px;
-  color: #757575;
+// ── Page layout ──────────────────────────────────────────────────────────────
+.rank-page {
+  padding: 28px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-table {
-  min-width: 900px;
-}
+// ── Header ────────────────────────────────────────────────────────────────────
+.rank-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 
-:host ::ng-deep .mat-mdc-paginator {
-  border-top: 1px solid #e0e0e0;
-  padding: 4px 8px;
-  font-size: 13px;
+  .rank-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 
-  .mat-mdc-paginator-container {
-    justify-content: flex-end;
-    gap: 8px;
-    min-height: 48px;
+  .rank-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    mat-icon { color: white; font-size: 28px; width: 28px; height: 28px; }
+  }
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a237e;
+  }
+
+  .rank-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #546e7a;
   }
 }
 
-.complete-profile-banner {
+.rank-stats {
+  display: flex;
+  gap: 12px;
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #e3f2fd;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    color: #1565c0;
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+    strong { font-weight: 700; }
+  }
+}
+
+// ── Podium ────────────────────────────────────────────────────────────────────
+.podium-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 8px 0 4px;
+}
+
+.podium-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 24px 16px;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+  border-top: 4px solid transparent;
+  min-width: 160px;
+  transition: transform 0.2s;
+  position: relative;
+
+  &:hover { transform: translateY(-4px); }
+
+  &.gold {
+    border-top-color: #f9a825;
+    background: linear-gradient(160deg, #fffde7, #fff);
+    transform: scale(1.05);
+    z-index: 2;
+    &:hover { transform: scale(1.05) translateY(-4px); }
+  }
+  &.silver { border-top-color: #90a4ae; }
+  &.bronze { border-top-color: #a1887f; }
+
+  .podium-medal { font-size: 2rem; margin-bottom: 8px; }
+
+  .podium-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1976d2, #64b5f6);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .gold-avatar { background: linear-gradient(135deg, #f9a825, #ffca28); color: #4a3000; }
+
+  .podium-name { font-weight: 600; font-size: 0.95rem; text-align: center; color: #212121; }
+  .podium-level { font-size: 0.78rem; color: #78909c; text-transform: capitalize; margin: 2px 0 6px; }
+  .podium-score { font-size: 1.1rem; font-weight: 700; color: #1565c0; }
+  .podium-rank-label {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #90a4ae;
+  }
+}
+
+// ── My Rank Banner ────────────────────────────────────────────────────────────
+.my-rank-banner {
+  background: linear-gradient(135deg, #1565c0, #1976d2);
+  border-radius: 14px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 24px;
-  padding: 16px 20px;
-  background: #fff8e1;
-  border: 1px solid #ffe082;
-  border-radius: 8px;
-  color: #5d4037;
+  gap: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
 
-  mat-icon {
-    color: #f9a825;
+  &::before {
+    content: '';
+    position: absolute;
+    right: -20px; top: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .my-rank-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
     flex-shrink: 0;
   }
 
-  span {
+  .my-rank-info {
+    display: flex;
+    flex-direction: column;
     flex: 1;
-    font-size: 15px;
-    font-weight: 500;
+    .my-rank-label { font-size: 0.78rem; opacity: 0.8; }
+    .my-rank-value { font-size: 1.15rem; font-weight: 700; }
+  }
+
+  .my-rank-score {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    .my-score-num { font-size: 1.3rem; font-weight: 800; }
+    .my-score-label { font-size: 0.75rem; opacity: 0.7; }
+  }
+
+  .my-rank-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px !important;
+    --mdc-linear-progress-active-indicator-color: rgba(255,255,255,0.7);
+    --mdc-linear-progress-track-color: rgba(255,255,255,0.2);
+  }
+}
+
+// ── Filter Bar ────────────────────────────────────────────────────────────────
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  .search-field { flex: 1 1 260px; }
+  .level-field { flex: 0 1 200px; }
+
+  .clear-btn {
+    height: 56px;
+    border-radius: 8px;
+    color: #546e7a;
+    border-color: #b0bec5;
+    white-space: nowrap;
+    mat-icon { font-size: 18px; width: 18px; height: 18px; margin-right: 4px; }
+  }
+}
+
+// ── Table card ────────────────────────────────────────────────────────────────
+.rank-table-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  overflow: hidden;
+
+  table {
+    width: 100%;
+    min-width: 760px;
+  }
+
+  th.mat-header-cell {
+    background: #f5f7fa;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #546e7a;
+    padding: 14px 12px;
+  }
+
+  td.mat-cell {
+    padding: 12px 12px;
+    border-bottom: 1px solid #f0f4f8;
+    font-size: 0.9rem;
+    color: #37474f;
+  }
+
+  tr.mat-row {
+    transition: background 0.15s;
+    &:hover { background: #f0f7ff; }
+    &.my-row { background: #e8f4fd; }
+  }
+}
+
+// ── Rank column ───────────────────────────────────────────────────────────────
+.col-rank { width: 56px; text-align: center; }
+.medal-rank { font-size: 1.3rem; line-height: 1; }
+.num-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #e3f2fd;
+  color: #1565c0;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+// ── Name + avatar ─────────────────────────────────────────────────────────────
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1976d2, #64b5f6);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .name-info {
+    display: flex;
+    flex-direction: column;
+    .emp-name { font-weight: 600; color: #212121; }
+    .emp-id { font-size: 0.76rem; color: #90a4ae; }
+  }
+}
+
+// ── Level chips ───────────────────────────────────────────────────────────────
+.level-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.lc-junior  { background: #e8f5e9; color: #2e7d32; }
+  &.lc-mid     { background: #e3f2fd; color: #1565c0; }
+  &.lc-senior  { background: #fce4ec; color: #c62828; }
+  &.lc-lead    { background: #f3e5f5; color: #7b1fa2; }
+  &.lc-default { background: #eceff1; color: #546e7a; }
+}
+
+// ── Availability ──────────────────────────────────────────────────────────────
+.avail-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+
+  &.ac-avail   { background: #e8f5e9; color: #2e7d32; }
+  &.ac-partial { background: #fff8e1; color: #e65100; }
+  &.ac-unavail { background: #fce4ec; color: #b71c1c; }
+}
+
+// ── Location ──────────────────────────────────────────────────────────────────
+.location-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; color: #90a4ae; }
+}
+
+// ── Rating ────────────────────────────────────────────────────────────────────
+.rating-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  .star-icon { font-size: 16px; width: 16px; height: 16px; color: #f9a825; }
+}
+
+// ── Score chip + bar ──────────────────────────────────────────────────────────
+.score-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.score-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  &.score-high    { background: #e8f5e9; color: #1b5e20; }
+  &.score-mid     { background: #fff8e1; color: #e65100; }
+  &.score-low     { background: #fce4ec; color: #b71c1c; }
+}
+
+.score-bar {
+  height: 4px !important;
+  border-radius: 2px;
+  &.bar-score-high  { --mdc-linear-progress-active-indicator-color: #43a047; }
+  &.bar-score-mid   { --mdc-linear-progress-active-indicator-color: #ff9800; }
+  &.bar-score-low   { --mdc-linear-progress-active-indicator-color: #ef5350; }
+}
+
+// ── No data ───────────────────────────────────────────────────────────────────
+.no-data {
+  text-align: center;
+  padding: 48px 0;
+  color: #90a4ae;
+
+  mat-icon { font-size: 48px; width: 48px; height: 48px; display: block; margin: 0 auto 12px; }
+  p { margin: 0; font-size: 1rem; }
+}
+
+// ── Profile incomplete banner ─────────────────────────────────────────────────
+.complete-profile-banner {
+  background: linear-gradient(135deg, #e3f2fd, #fff);
+  border: 1px solid #90caf9;
+  border-left: 4px solid #1976d2;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  mat-icon { color: #1976d2; font-size: 24px; width: 24px; height: 24px; flex-shrink: 0; }
+
+  .banner-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    strong { color: #1565c0; font-size: 0.95rem; }
+    span { font-size: 0.82rem; color: #546e7a; margin-top: 2px; }
+  }
+
+  .banner-btn {
+    background: #1976d2;
+    color: white;
+    font-weight: 600;
+    white-space: nowrap;
   }
 }
 

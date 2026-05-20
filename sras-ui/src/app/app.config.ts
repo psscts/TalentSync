@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideNativeDateAdapter(),
     {
       provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-      useValue: { verticalPosition: 'top', horizontalPosition: 'right', duration: 3000 }
+      useValue: { verticalPosition: 'bottom', horizontalPosition: 'right', duration: 3000 }
     }
   ]
 };

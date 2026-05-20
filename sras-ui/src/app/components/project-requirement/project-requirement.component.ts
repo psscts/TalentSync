@@ -8,8 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { ToastService } from '../../services/toast.service';
 import { ProjectService } from '../../services/project.service';
@@ -28,8 +27,7 @@ import { Project, ProjectRequirement, Role } from '../../models/project.model';
     MatSelectModule,
     MatIconModule,
     MatTableModule,
-    MatExpansionModule,
-    MatChipsModule,
+    MatTooltipModule,
     MatDividerModule
   ],
   templateUrl: './project-requirement.component.html',
@@ -40,6 +38,8 @@ export class ProjectRequirementComponent implements OnInit {
   editingId: number | null = null;
   loading = false;
   showProjectForm = false;
+  showReqForm = false;
+  selectedProjectId: number | null = null;
 
   form = this.fb.group({
     projectName: ['', Validators.required],
@@ -84,6 +84,21 @@ export class ProjectRequirementComponent implements OnInit {
   toggleProjectForm(): void {
     this.showProjectForm = !this.showProjectForm;
     if (!this.showProjectForm) this.resetProjectForm();
+  }
+
+  openCreateForm(): void {
+    this.resetProjectForm();
+    this.showProjectForm = true;
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+  }
+
+  openReqForm(projectId: number): void {
+    this.selectedProjectId = projectId;
+    this.showReqForm = true;
+    this.reqForm.patchValue({ projectId });
+    setTimeout(() => {
+      document.getElementById('req-form-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   }
 
   get locations() { return this.form.get('locationPreferences') as FormArray; }
@@ -146,7 +161,8 @@ export class ProjectRequirementComponent implements OnInit {
     this.projectService.addRequirement(projectId!, req).subscribe({
       next: () => {
         this.toast.success('Requirement added', 2500);
-        this.reqForm.reset({ numberOfPositions: 1 });
+        this.reqForm.patchValue({ projectId: this.selectedProjectId, numberOfPositions: 1 });
+        this.reqForm.get('location')!.reset();
         this.reqSkills.clear();
         this.reqCerts.clear();
         this.loadProjects();
@@ -169,6 +185,7 @@ export class ProjectRequirementComponent implements OnInit {
     p.locationPreferences?.forEach((loc, i) => {
       (this.locations.at(i) as any).setValue(loc);
     });
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   }
 
   deleteProject(id: number): void {

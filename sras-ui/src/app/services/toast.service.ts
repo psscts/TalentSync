@@ -9,7 +9,7 @@ export class ToastService {
     this.snackBar.open(message, 'Close', {
       duration,
       panelClass: ['toast-success'],
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'right'
     });
   }
@@ -18,7 +18,7 @@ export class ToastService {
     this.snackBar.open(message, 'Close', {
       duration,
       panelClass: ['toast-error'],
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'right'
     });
   }
@@ -27,7 +27,7 @@ export class ToastService {
     this.snackBar.open(message, 'Close', {
       duration,
       panelClass: ['toast-info'],
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'right'
     });
   }

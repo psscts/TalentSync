@@ -1,238 +1,302 @@
 ﻿<div class="page-container">
 
-  <!-- ======= PAGE HEADER ======= -->
-  <div class="page-header">
-    <h2>My Projects</h2>
-    <button mat-raised-button color="primary" (click)="toggleProjectForm()">
-      <mat-icon>{{ showProjectForm ? 'close' : 'add' }}</mat-icon>
-      {{ showProjectForm ? 'Cancel' : 'Create Project' }}
-    </button>
-  </div>
+  <!-- ══════════════════════════════════════════
+       STEP 1 — MANAGE PROJECTS
+  ══════════════════════════════════════════ -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-badge">1</div>
+      <div class="step-info">
+        <h2>Projects</h2>
+        <p>Create and manage your projects. Add requirements in Step 2 once a project exists.</p>
+      </div>
+      <button mat-raised-button color="primary" (click)="toggleProjectForm()" class="step-action-btn">
+        <mat-icon>{{ showProjectForm ? 'close' : 'add' }}</mat-icon>
+        {{ showProjectForm ? 'Cancel' : 'New Project' }}
+      </button>
+    </div>
 
-  <!-- ======= CREATE / EDIT PROJECT FORM (toggled) ======= -->
-  @if (showProjectForm) {
-  <mat-card class="form-card mb-24">
-    <mat-card-header>
-      <mat-card-title>{{ editingId ? 'Edit Project' : 'New Project' }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="form" (ngSubmit)="submitProject()">
-        <div class="form-row">
-          <mat-form-field>
-            <mat-label>Project Name</mat-label>
-            <input matInput formControlName="projectName">
-            <mat-error>Required</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Domain</mat-label>
-            <input matInput formControlName="domain">
-            <mat-error>Required</mat-error>
-          </mat-form-field>
-        </div>
-        <div class="form-row">
-          <mat-form-field>
-            <mat-label>Start Date</mat-label>
-            <input matInput type="date" formControlName="startDate">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>End Date</mat-label>
-            <input matInput type="date" formControlName="endDate">
-          </mat-form-field>
+    <!-- CREATE / EDIT FORM -->
+    @if (showProjectForm) {
+    <mat-card class="inner-form-card">
+      <mat-card-header>
+        <mat-card-title>{{ editingId ? 'Edit Project' : 'New Project' }}</mat-card-title>
+        <mat-card-subtitle>{{ editingId ? 'Update project details below' : 'Fill in the details to create a new project' }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="submitProject()">
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Project Name</mat-label>
+              <mat-icon matPrefix>work</mat-icon>
+              <input matInput formControlName="projectName">
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Domain</mat-label>
+              <mat-icon matPrefix>category</mat-icon>
+              <input matInput formControlName="domain">
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Start Date</mat-label>
+              <mat-icon matPrefix>calendar_today</mat-icon>
+              <input matInput type="date" formControlName="startDate">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>End Date</mat-label>
+              <mat-icon matPrefix>event</mat-icon>
+              <input matInput type="date" formControlName="endDate">
+            </mat-form-field>
+          </div>
+
+          <div class="section-sub-header">
+            <strong>Location Preferences</strong>
+            <button mat-stroked-button type="button" (click)="addLocation()">
+              <mat-icon>add</mat-icon> Add Location
+            </button>
+          </div>
+          <div formArrayName="locationPreferences" class="chips-row">
+            @for (loc of locations.controls; track $index) {
+            <mat-form-field appearance="outline" class="location-field">
+              <input matInput [formControlName]="$index" placeholder="e.g. Bangalore">
+              <button matSuffix mat-icon-button type="button" (click)="removeLocation($index)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+            }
+          </div>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+              <mat-icon>{{ editingId ? 'save' : 'add_circle' }}</mat-icon>
+              {{ editingId ? 'Update Project' : 'Create Project' }}
+            </button>
+            <button mat-stroked-button type="button" (click)="toggleProjectForm()">Cancel</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    }
+
+    <!-- EMPTY STATE -->
+    @if (projects.length === 0 && !showProjectForm) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">folder_open</mat-icon>
+      <h3>No projects yet</h3>
+      <p>Create your first project to get started.</p>
+      <button mat-raised-button color="primary" (click)="openCreateForm()">
+        <mat-icon>add</mat-icon> Create Your First Project
+      </button>
+    </div>
+    }
+
+    <!-- PROJECT CARDS -->
+    @if (projects.length > 0) {
+    <div class="project-cards-grid">
+      @for (project of projects; track project.id) {
+      <div class="project-card">
+        <div class="project-card-top">
+          <div class="project-card-icon">
+            <mat-icon>folder</mat-icon>
+          </div>
+          <div class="project-card-title-block">
+            <h3>{{ project.projectName }}</h3>
+            <span class="domain-tag">{{ project.domain }}</span>
+          </div>
         </div>
 
-        <div class="section-header mt-16">
-          <strong>Location Preferences</strong>
-          <button mat-stroked-button type="button" (click)="addLocation()">
-            <mat-icon>add</mat-icon> Add Location
-          </button>
+        <div class="project-card-meta">
+          <div class="meta-row">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ project.locationPreferences?.join(', ') || 'No locations' }}</span>
+          </div>
+          <div class="meta-row">
+            <mat-icon>calendar_today</mat-icon>
+            <span>{{ project.startDate ? (project.startDate | date:'mediumDate') : '—' }} →
+              {{ project.endDate ? (project.endDate | date:'mediumDate') : '—' }}</span>
+          </div>
         </div>
-        <div formArrayName="locationPreferences" class="chips-row">
-          @for (loc of locations.controls; track $index) {
-          <mat-form-field class="location-field">
-            <input matInput [formControlName]="$index" placeholder="e.g. Bangalore">
-            <button matSuffix mat-icon-button type="button" (click)="removeLocation($index)">
+
+        @if (project.projectRequirements?.length) {
+        <div class="req-chips">
+          @for (req of project.projectRequirements; track req.id) {
+          <div class="req-chip">
+            <span>{{ req.role?.name }} · {{ req.role?.experienceLevel }} · {{ req.numberOfPositions }} pos</span>
+            <button mat-icon-button class="req-chip-del" (click)="deleteRequirement(req.id!)" matTooltip="Remove requirement">
               <mat-icon>close</mat-icon>
             </button>
-          </mat-form-field>
+          </div>
           }
         </div>
+        } @else {
+        <p class="no-req">No requirements yet.</p>
+        }
 
-        <div class="form-actions mt-16">
-          <button mat-raised-button color="primary" type="submit" [disabled]="loading">
-            {{ editingId ? 'Update Project' : 'Create Project' }}
+        <div class="project-card-actions">
+          <button mat-stroked-button color="primary" (click)="editProject(project)">
+            <mat-icon>edit</mat-icon> Edit
           </button>
-          <button mat-stroked-button type="button" (click)="toggleProjectForm()">Cancel</button>
+          <button mat-raised-button color="accent" (click)="openReqForm(project.id!)">
+            <mat-icon>add_task</mat-icon> Add Requirement
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteProject(project.id!)" matTooltip="Delete project">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
-  }
-
-  <!-- ======= PROJECTS LIST ======= -->
-  @if (projects.length === 0) {
-  <mat-card class="empty-card mb-24">
-    <mat-card-content>
-      <p>No projects yet. Click <strong>Create Project</strong> above to get started.</p>
-    </mat-card-content>
-  </mat-card>
-  } @else {
-  <mat-accordion class="mb-24">
-    @for (project of projects; track project.id) {
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{ project.projectName }}</mat-panel-title>
-        <mat-panel-description>{{ project.domain }}</mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <p><strong>Locations:</strong> {{ project.locationPreferences?.join(', ') || 'N/A' }}</p>
-      <p>
-        <strong>Start:</strong> {{ project.startDate ? (project.startDate | date:'mediumDate') : 'Not set' }}
-        &nbsp;|&nbsp;
-        <strong>End:</strong> {{ project.endDate ? (project.endDate | date:'mediumDate') : 'Not set' }}
-      </p>
-
-      <h4>Requirements</h4>
-      @for (req of project.projectRequirements; track req.id) {
-      <div class="req-row">
-        <span>
-          <strong>{{ req.role?.name }}</strong> &mdash; {{ req.role?.experienceLevel }} |
-          {{ req.numberOfPositions }} position(s) &#64; {{ req.location }}
-        </span>
-        <button mat-icon-button color="warn" (click)="deleteRequirement(req.id!)">
-          <mat-icon>delete</mat-icon>
-        </button>
       </div>
       }
-      @if (!project.projectRequirements?.length) {
-      <p class="no-req">No requirements added yet.</p>
-      }
-
-      <div class="panel-actions">
-        <button mat-stroked-button color="primary" (click)="editProject(project)">
-          <mat-icon>edit</mat-icon> Edit
-        </button>
-        <button mat-stroked-button color="warn" (click)="deleteProject(project.id!)">
-          <mat-icon>delete</mat-icon> Delete
-        </button>
-      </div>
-    </mat-expansion-panel>
+    </div>
     }
-  </mat-accordion>
-  }
+  </div>
 
-  <mat-divider class="mt-8 mb-24"></mat-divider>
+  <!-- ══════════════════════════════════════════
+       STEP 2 — ADD REQUIREMENT (only after project exists)
+  ══════════════════════════════════════════ -->
+  @if (projects.length > 0) {
+  <div class="step-card" id="req-form-section">
+    <div class="step-header">
+      <div class="step-badge">2</div>
+      <div class="step-info">
+        <h2>Add Project Requirement</h2>
+        <p>Define role, skills, certifications and positions for a project.</p>
+      </div>
+      @if (!showReqForm) {
+      <button mat-stroked-button (click)="showReqForm = true" class="step-action-btn">
+        <mat-icon>expand_more</mat-icon> Open Form
+      </button>
+      } @else {
+      <button mat-stroked-button (click)="showReqForm = false" class="step-action-btn">
+        <mat-icon>expand_less</mat-icon> Collapse
+      </button>
+      }
+    </div>
 
-  <!-- ======= ADD REQUIREMENT ======= -->
-  <h2>Add Project Requirement</h2>
-  <mat-card>
-    <mat-card-content>
-      <form [formGroup]="reqForm" (ngSubmit)="submitRequirement()">
-        <div class="form-row">
-          <mat-form-field>
-            <mat-label>Select Project</mat-label>
-            <mat-select formControlName="projectId">
-              @for (p of projects; track p.id) {
-              <mat-option [value]="p.id">{{ p.projectName }}</mat-option>
-              }
-            </mat-select>
-            <mat-error>Required</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Location</mat-label>
-            <mat-select formControlName="location">
-              @for (loc of selectedProjectLocations; track loc) {
-              <mat-option [value]="loc">{{ loc }}</mat-option>
-              }
-            </mat-select>
-            <mat-error>Required</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Positions</mat-label>
-            <input matInput type="number" formControlName="numberOfPositions">
-            <mat-error>Required (min 1)</mat-error>
-          </mat-form-field>
-        </div>
+    @if (!showReqForm) {
+    <p class="step-hint">Click <strong>Add Requirement</strong> on a project card above, or use the button to open this form.</p>
+    }
 
-        <div formGroupName="role">
+    @if (showReqForm) {
+    <mat-card class="inner-form-card">
+      <mat-card-content>
+        <form [formGroup]="reqForm" (ngSubmit)="submitRequirement()">
+
+          <!-- Project & location row -->
           <div class="form-row">
-            <mat-form-field>
-              <mat-label>Role Name</mat-label>
-              <input matInput formControlName="name">
-              <mat-error>Required</mat-error>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Experience Level</mat-label>
-              <mat-select formControlName="experienceLevel">
-                <mat-option value="JUNIOR">Junior</mat-option>
-                <mat-option value="MID">Mid</mat-option>
-                <mat-option value="SENIOR">Senior</mat-option>
-                <mat-option value="LEAD">Lead</mat-option>
+            <mat-form-field appearance="outline">
+              <mat-label>Select Project</mat-label>
+              <mat-icon matPrefix>folder</mat-icon>
+              <mat-select formControlName="projectId">
+                @for (p of projects; track p.id) {
+                <mat-option [value]="p.id">{{ p.projectName }}</mat-option>
+                }
               </mat-select>
               <mat-error>Required</mat-error>
             </mat-form-field>
-            <mat-form-field>
-              <mat-label>Work Mode</mat-label>
-              <mat-select formControlName="workMode">
-                <mat-option value="REMOTE">Remote</mat-option>
-                <mat-option value="HYBRID">Hybrid</mat-option>
-                <mat-option value="ONSITE">Onsite</mat-option>
+            <mat-form-field appearance="outline">
+              <mat-label>Location</mat-label>
+              <mat-icon matPrefix>location_on</mat-icon>
+              <mat-select formControlName="location">
+                @for (loc of selectedProjectLocations; track loc) {
+                <mat-option [value]="loc">{{ loc }}</mat-option>
+                }
               </mat-select>
               <mat-error>Required</mat-error>
             </mat-form-field>
-            <mat-form-field>
-              <mat-label>Years Exp Required</mat-label>
-              <input matInput type="number" formControlName="yearsOfExperience">
-              <mat-error>Required</mat-error>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Salary Budget</mat-label>
-              <input matInput type="number" formControlName="expectedSalary">
-              <mat-error>Required</mat-error>
+            <mat-form-field appearance="outline">
+              <mat-label>Positions</mat-label>
+              <mat-icon matPrefix>people</mat-icon>
+              <input matInput type="number" formControlName="numberOfPositions">
+              <mat-error>Required (min 1)</mat-error>
             </mat-form-field>
           </div>
 
-          <div class="section-header mt-8">
-            <strong>Required Skills</strong>
-            <button mat-stroked-button type="button" (click)="addReqSkill()">
-              <mat-icon>add</mat-icon>
-            </button>
-          </div>
-          <div formArrayName="requiredSkills" class="chips-row">
-            @for (s of reqSkills.controls; track $index) {
-            <mat-form-field class="chip-field">
-              <input matInput [formControlName]="$index" placeholder="Skill name">
-              <button matSuffix mat-icon-button type="button" (click)="removeReqSkill($index)">
-                <mat-icon>close</mat-icon>
+          <!-- Role details -->
+          <div class="sub-section-label">Role Details</div>
+          <div formGroupName="role">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Role Name</mat-label>
+                <input matInput formControlName="name">
+                <mat-error>Required</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Experience Level</mat-label>
+                <mat-select formControlName="experienceLevel">
+                  <mat-option value="JUNIOR">Junior</mat-option>
+                  <mat-option value="MID">Mid</mat-option>
+                  <mat-option value="SENIOR">Senior</mat-option>
+                  <mat-option value="LEAD">Lead</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Work Mode</mat-label>
+                <mat-select formControlName="workMode">
+                  <mat-option value="REMOTE">Remote</mat-option>
+                  <mat-option value="HYBRID">Hybrid</mat-option>
+                  <mat-option value="ONSITE">Onsite</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Years Exp Required</mat-label>
+                <input matInput type="number" formControlName="yearsOfExperience">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Salary Budget</mat-label>
+                <input matInput type="number" formControlName="expectedSalary">
+              </mat-form-field>
+            </div>
+
+            <!-- Skills -->
+            <div class="section-sub-header">
+              <strong>Required Skills</strong>
+              <button mat-stroked-button type="button" (click)="addReqSkill()">
+                <mat-icon>add</mat-icon> Add Skill
               </button>
-            </mat-form-field>
-            }
-          </div>
+            </div>
+            <div formArrayName="requiredSkills" class="chips-row">
+              @for (s of reqSkills.controls; track $index) {
+              <mat-form-field appearance="outline" class="chip-field">
+                <input matInput [formControlName]="$index" placeholder="e.g. Angular">
+                <button matSuffix mat-icon-button type="button" (click)="removeReqSkill($index)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+              }
+            </div>
 
-          <div class="section-header mt-8">
-            <strong>Required Certifications</strong>
-            <button mat-stroked-button type="button" (click)="addReqCert()">
-              <mat-icon>add</mat-icon>
-            </button>
-          </div>
-          <div formArrayName="certificationsNeeded" class="chips-row">
-            @for (c of reqCerts.controls; track $index) {
-            <mat-form-field class="chip-field">
-              <input matInput [formControlName]="$index" placeholder="Certification name">
-              <button matSuffix mat-icon-button type="button" (click)="removeReqCert($index)">
-                <mat-icon>close</mat-icon>
+            <!-- Certifications -->
+            <div class="section-sub-header">
+              <strong>Required Certifications</strong>
+              <button mat-stroked-button type="button" (click)="addReqCert()">
+                <mat-icon>add</mat-icon> Add Cert
               </button>
-            </mat-form-field>
-            }
+            </div>
+            <div formArrayName="certificationsNeeded" class="chips-row">
+              @for (c of reqCerts.controls; track $index) {
+              <mat-form-field appearance="outline" class="chip-field">
+                <input matInput [formControlName]="$index" placeholder="e.g. AWS Certified">
+                <button matSuffix mat-icon-button type="button" (click)="removeReqCert($index)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+              }
+            </div>
           </div>
-        </div>
 
-        <div class="mt-16">
-          <button mat-raised-button color="primary" type="submit">
-            <mat-icon>add_circle</mat-icon> Add Requirement
-          </button>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit">
+              <mat-icon>add_circle</mat-icon> Add Requirement
+            </button>
+            <button mat-stroked-button type="button" (click)="showReqForm = false">Cancel</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    }
+  </div>
+  }
 
 </div>

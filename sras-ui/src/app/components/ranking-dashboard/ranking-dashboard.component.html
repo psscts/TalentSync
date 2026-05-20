@@ -1,17 +1,83 @@
-<div class="page-container">
-  <h2>Employee Ranking Dashboard</h2>
+<div class="rank-page">
 
-  <div class="filter-row">
-    <mat-form-field>
-      <mat-label>Search employees</mat-label>
+  <!-- ── PAGE HEADER ── -->
+  <div class="rank-header">
+    <div class="rank-header-left">
+      <div class="rank-icon"><mat-icon>leaderboard</mat-icon></div>
+      <div>
+        <h2>Employee Rankings</h2>
+        <p class="rank-subtitle">Employees ranked by composite score across skills, experience & availability.</p>
+      </div>
+    </div>
+    <div class="rank-stats">
+      <div class="stat-pill">
+        <mat-icon>group</mat-icon>
+        <span><strong>{{ totalCount }}</strong> employees</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOP 3 PODIUM ── -->
+  @if (topThree.length >= 3) {
+  <div class="podium-row">
+    <!-- 2nd place -->
+    <div class="podium-card silver">
+      <div class="podium-medal">🥈</div>
+      <div class="podium-avatar">{{ initials(topThree[1].name) }}</div>
+      <div class="podium-name">{{ topThree[1].name }}</div>
+      <div class="podium-level">{{ topThree[1].experienceLevel }}</div>
+      <div class="podium-score">{{ topThree[1].employeeScore | number:'1.1-1' }}</div>
+      <div class="podium-rank-label">#2</div>
+    </div>
+    <!-- 1st place -->
+    <div class="podium-card gold">
+      <div class="podium-medal">🥇</div>
+      <div class="podium-avatar gold-avatar">{{ initials(topThree[0].name) }}</div>
+      <div class="podium-name">{{ topThree[0].name }}</div>
+      <div class="podium-level">{{ topThree[0].experienceLevel }}</div>
+      <div class="podium-score">{{ topThree[0].employeeScore | number:'1.1-1' }}</div>
+      <div class="podium-rank-label">#1</div>
+    </div>
+    <!-- 3rd place -->
+    <div class="podium-card bronze">
+      <div class="podium-medal">🥉</div>
+      <div class="podium-avatar">{{ initials(topThree[2].name) }}</div>
+      <div class="podium-name">{{ topThree[2].name }}</div>
+      <div class="podium-level">{{ topThree[2].experienceLevel }}</div>
+      <div class="podium-score">{{ topThree[2].employeeScore | number:'1.1-1' }}</div>
+      <div class="podium-rank-label">#3</div>
+    </div>
+  </div>
+  }
+
+  <!-- ── MY RANK BANNER (employees with profile) ── -->
+  @if (isEmployee && myRank && myProfile) {
+  <div class="my-rank-banner">
+    <div class="my-rank-avatar">{{ initials(myProfile.name) }}</div>
+    <div class="my-rank-info">
+      <span class="my-rank-label">Your Ranking</span>
+      <span class="my-rank-value">#{{ myRank }} of {{ totalCount }}</span>
+    </div>
+    <div class="my-rank-score">
+      <span class="my-score-num">{{ myProfile.employeeScore | number:'1.1-1' }}</span>
+      <span class="my-score-label">score</span>
+    </div>
+    <mat-progress-bar mode="determinate" [value]="(myProfile.employeeScore ?? 0)" class="my-rank-bar"></mat-progress-bar>
+  </div>
+  }
+
+  <!-- ── FILTER BAR ── -->
+  <div class="filter-bar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
       <input matInput #searchInput (keyup)="applyFilter($event)" placeholder="Name, level, location…">
-      <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Filter by Level</mat-label>
+    <mat-form-field appearance="outline" class="level-field">
+      <mat-label>Experience Level</mat-label>
       <mat-select #levelSelect (selectionChange)="filterByLevel($event.value)">
-        <mat-option value="">All</mat-option>
+        <mat-option value="">All Levels</mat-option>
         <mat-option value="junior">Junior</mat-option>
         <mat-option value="mid">Mid</mat-option>
         <mat-option value="senior">Senior</mat-option>
@@ -19,69 +85,115 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-stroked-button (click)="clearFilter(); searchInput.value = ''; levelSelect.value = ''">
-      <mat-icon>clear</mat-icon> Clear
+    <button mat-stroked-button class="clear-btn"
+            (click)="clearFilter(); searchInput.value = ''; levelSelect.value = ''">
+      <mat-icon>restart_alt</mat-icon> Reset
     </button>
   </div>
 
-  <div class="table-container">
+  <!-- ── TABLE ── -->
+  <div class="rank-table-card">
     <table mat-table [dataSource]="dataSource" matSort>
 
+      <!-- Rank -->
       <ng-container matColumnDef="rank">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
-        <td mat-cell *matCellDef="let e">{{ e.rank }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-rank">#</th>
+        <td mat-cell *matCellDef="let e" class="col-rank">
+          @if (e.rank <= 3) {
+            <span class="medal-rank">{{ medalIcon(e.rank) }}</span>
+          } @else {
+            <span class="num-rank">{{ e.rank }}</span>
+          }
+        </td>
       </ng-container>
 
-      <ng-container matColumnDef="employeeId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Emp ID</th>
-        <td mat-cell *matCellDef="let e">{{ e.employeeId }}</td>
-      </ng-container>
-
+      <!-- Name + avatar -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td mat-cell *matCellDef="let e">{{ e.name }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="name-cell">
+            <div class="avatar-circle">{{ initials(e.name) }}</div>
+            <div class="name-info">
+              <span class="emp-name">{{ e.name }}</span>
+              <span class="emp-id">{{ e.employeeId }}</span>
+            </div>
+          </div>
+        </td>
       </ng-container>
 
+      <!-- Level -->
       <ng-container matColumnDef="experienceLevel">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Level</th>
-        <td mat-cell *matCellDef="let e">{{ e.experienceLevel }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="yearsOfExperience">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Years Exp</th>
-        <td mat-cell *matCellDef="let e">{{ e.yearsOfExperience }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="availabilityStatus">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Availability</th>
-        <td mat-cell *matCellDef="let e">{{ e.availabilityStatus }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="preferredLocation">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Location</th>
-        <td mat-cell *matCellDef="let e">{{ e.preferredLocation }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="previousRatings">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Rating</th>
-        <td mat-cell *matCellDef="let e">{{ e.previousRatings | number:'1.1-1' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="employeeScore">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Score</th>
         <td mat-cell *matCellDef="let e">
-          <span class="score-chip" [ngClass]="scoreClass(e.employeeScore ?? 0)">
-            {{ e.employeeScore | number:'1.1-1' }}
+          <span class="level-chip lc-{{ levelClass(e.experienceLevel) }}">
+            {{ e.experienceLevel }}
           </span>
         </td>
       </ng-container>
 
+      <!-- Years Exp -->
+      <ng-container matColumnDef="yearsOfExperience">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Exp</th>
+        <td mat-cell *matCellDef="let e">{{ e.yearsOfExperience }} yrs</td>
+      </ng-container>
+
+      <!-- Availability -->
+      <ng-container matColumnDef="availabilityStatus">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Availability</th>
+        <td mat-cell *matCellDef="let e">
+          <span class="avail-chip ac-{{ availClass(e.availabilityStatus) }}">
+            @if (e.availabilityStatus === 'AVAILABLE') { Available }
+            @else if (e.availabilityStatus === 'PARTIALLY_AVAILABLE') { Partial }
+            @else { Unavailable }
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Location -->
+      <ng-container matColumnDef="preferredLocation">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Location</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="location-cell">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ e.preferredLocation || '—' }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Rating -->
+      <ng-container matColumnDef="previousRatings">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Rating</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="rating-cell">
+            <mat-icon class="star-icon">star</mat-icon>
+            <span>{{ e.previousRatings | number:'1.1-1' }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Score -->
+      <ng-container matColumnDef="employeeScore">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Score</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="score-cell">
+            <span class="score-chip" [ngClass]="scoreClass(e.employeeScore ?? 0)">
+              {{ e.employeeScore | number:'1.1-1' }}
+            </span>
+            <mat-progress-bar mode="determinate" [value]="e.employeeScore ?? 0"
+              [ngClass]="'bar-' + scoreClass(e.employeeScore ?? 0)" class="score-bar">
+            </mat-progress-bar>
+          </div>
+        </td>
+      </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+          [class.my-row]="isEmployee && myProfile?.employeeId === row.employeeId"></tr>
 
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
-          No employees found matching "{{ dataSource.filter }}"
+          <mat-icon>search_off</mat-icon>
+          <p>No employees found matching your filters.</p>
         </td>
       </tr>
     </table>
@@ -89,9 +201,16 @@
     <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
   </div>
 
-  <div class="complete-profile-banner" *ngIf="isEmployee && profileIncomplete">
+  <!-- ── INCOMPLETE PROFILE BANNER ── -->
+  @if (isEmployee && profileIncomplete) {
+  <div class="complete-profile-banner">
     <mat-icon>info_outline</mat-icon>
-    <span>Complete your details to view your ranking.</span>
-    <a mat-stroked-button color="primary" routerLink="/employees">Complete Profile</a>
+    <div class="banner-text">
+      <strong>Complete your profile to appear in rankings.</strong>
+      <span>Add your experience level, skills and availability to get your score.</span>
+    </div>
+    <a mat-raised-button routerLink="/employees" class="banner-btn">Complete Profile</a>
   </div>
+  }
+
 </div>
