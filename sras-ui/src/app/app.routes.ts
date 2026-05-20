@@ -26,6 +26,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'my-dashboard',
+    loadComponent: () => import('./components/employee-dashboard/employee-dashboard.component').then(m => m.EmployeeDashboardComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'ranking',
     loadComponent: () => import('./components/ranking-dashboard/ranking-dashboard.component').then(m => m.RankingDashboardComponent),
     canActivate: [authGuard]
@@ -38,6 +43,11 @@ export const routes: Routes = [
   {
     path: 'matching',
     loadComponent: () => import('./components/matching-results/matching-results.component').then(m => m.MatchingResultsComponent),
+    canActivate: [managerGuard]
+  },
+  {
+    path: 'manager-dashboard',
+    loadComponent: () => import('./components/manager-dashboard/manager-dashboard.component').then(m => m.ManagerDashboardComponent),
     canActivate: [managerGuard]
   },
   { path: '**', redirectTo: '/login' }

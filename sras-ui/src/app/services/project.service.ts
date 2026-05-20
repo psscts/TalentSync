@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Project, ProjectRequirement } from '../models/project.model';
+import { Project, ProjectRequirement, ProjectAssignment, ProjectDashboard, EmployeeProjectDto } from '../models/project.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
   private readonly apiUrl = `${environment.apiUrl}/projects`;
+  private readonly assignUrl = `${environment.apiUrl}/assignments`;
 
   constructor(private http: HttpClient) {}
 
@@ -44,5 +45,27 @@ export class ProjectService {
 
   deleteRequirement(reqId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/requirements/${reqId}`);
+  }
+
+  // ── Assignment methods ──────────────────────────────────────────────────────
+
+  assignEmployee(projectId: number, employeeId: number): Observable<ProjectAssignment> {
+    return this.http.post<ProjectAssignment>(this.assignUrl, { projectId, employeeId });
+  }
+
+  unassignEmployee(assignmentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.assignUrl}/${assignmentId}`);
+  }
+
+  getAssignmentsByProject(projectId: number): Observable<ProjectAssignment[]> {
+    return this.http.get<ProjectAssignment[]>(`${this.assignUrl}/project/${projectId}`);
+  }
+
+  getDashboard(): Observable<ProjectDashboard[]> {
+    return this.http.get<ProjectDashboard[]>(`${this.assignUrl}/dashboard`);
+  }
+
+  getMyProjects(): Observable<EmployeeProjectDto[]> {
+    return this.http.get<EmployeeProjectDto[]>(`${this.assignUrl}/my-projects`);
   }
 }

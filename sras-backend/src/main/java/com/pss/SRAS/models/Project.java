@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,10 @@ public class Project {
     @Column(name = "location")
     @Builder.Default
     private List<String> locationPreferences = new ArrayList<>();
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)

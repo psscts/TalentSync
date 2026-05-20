@@ -45,7 +45,9 @@ export class ProjectRequirementComponent implements OnInit {
   form = this.fb.group({
     projectName: ['', Validators.required],
     domain: ['', Validators.required],
-    locationPreferences: this.fb.array([])
+    locationPreferences: this.fb.array([]),
+    startDate: [''],
+    endDate: ['']
   });
 
   reqForm = this.fb.group({
@@ -152,7 +154,15 @@ export class ProjectRequirementComponent implements OnInit {
     this.showProjectForm = true;
     this.locations.clear();
     p.locationPreferences?.forEach(() => this.addLocation());
-    this.form.patchValue(p as any);
+    this.form.patchValue({
+      projectName: p.projectName,
+      domain: p.domain ?? '',
+      startDate: p.startDate ?? '',
+      endDate: p.endDate ?? ''
+    });
+    p.locationPreferences?.forEach((loc, i) => {
+      (this.locations.at(i) as any).setValue(loc);
+    });
   }
 
   deleteProject(id: number): void {

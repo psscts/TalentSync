@@ -2,6 +2,7 @@ package com.pss.SRAS.services;
 
 import com.pss.SRAS.dto.MatchingResultDto;
 import com.pss.SRAS.models.*;
+import com.pss.SRAS.models.enums.AvailabilityStatus;
 import com.pss.SRAS.repositories.EmployeeRepository;
 import com.pss.SRAS.repositories.ProjectRequirementRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +35,10 @@ public class MatchingService {
             throw new NoSuchElementException("No requirements found for project: " + projectId);
         }
 
-        // Aggregate scores across all requirements (take max match per employee)
-        List<Employee> allEmployees = employeeRepository.findAll();
+        // Only consider AVAILABLE or PARTIALLY_AVAILABLE employees
+        List<Employee> allEmployees = employeeRepository.findAll().stream()
+                .filter(e -> e.getAvailabilityStatus() != AvailabilityStatus.UNAVAILABLE)
+                .collect(Collectors.toList());
         List<MatchingResultDto> results = new ArrayList<>();
 
         for (Employee emp : allEmployees) {

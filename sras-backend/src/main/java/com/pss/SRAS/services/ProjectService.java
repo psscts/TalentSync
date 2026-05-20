@@ -42,6 +42,8 @@ public class ProjectService {
         existing.setDomain(updated.getDomain());
         existing.setLocationPreferences(updated.getLocationPreferences());
         existing.setProjectManager(updated.getProjectManager());
+        existing.setStartDate(updated.getStartDate());
+        existing.setEndDate(updated.getEndDate());
 
         if (updated.getProjectRequirements() != null) {
             existing.getProjectRequirements().clear();

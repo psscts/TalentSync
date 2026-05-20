@@ -1,0 +1,106 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h2>My Project Assignments</h2>
+      <p class="subtitle">Projects you are currently or previously assigned to.</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="load()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon> Refresh
+    </button>
+  </div>
+
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="mb-16"></mat-progress-bar>
+  }
+
+  @if (!loading && projects.length === 0) {
+    <mat-card class="empty-card">
+      <mat-card-content>
+        <mat-icon class="empty-icon">assignment_late</mat-icon>
+        <p>You are not assigned to any project yet.</p>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <div class="cards-grid">
+    @for (p of projects; track p.assignmentId) {
+      <mat-card class="project-card">
+
+        <!-- Card header with project name and domain -->
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="avatar-icon">work</mat-icon>
+          <mat-card-title>{{ p.projectName }}</mat-card-title>
+          <mat-card-subtitle>{{ p.domain || 'No domain specified' }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <mat-divider class="divider"></mat-divider>
+
+          <div class="info-grid">
+
+            <div class="info-row">
+              <mat-icon class="info-icon">badge</mat-icon>
+              <div class="info-text">
+                <span class="label">Your Role</span>
+                <span class="value role-value">{{ p.roleName || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <mat-icon class="info-icon">manage_accounts</mat-icon>
+              <div class="info-text">
+                <span class="label">Project Manager</span>
+                <span class="value">{{ p.projectManagerName || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <mat-icon class="info-icon">calendar_today</mat-icon>
+              <div class="info-text">
+                <span class="label">Start Date</span>
+                <span class="value">{{ p.startDate ? (p.startDate | date:'mediumDate') : 'Not set' }}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <mat-icon class="info-icon">event</mat-icon>
+              <div class="info-text">
+                <span class="label">End Date</span>
+                <span class="value">{{ p.endDate ? (p.endDate | date:'mediumDate') : 'Not set' }}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <mat-icon class="info-icon">schedule</mat-icon>
+              <div class="info-text">
+                <span class="label">Duration</span>
+                <span class="value duration-value">
+                  @if (p.durationWeeks !== null && p.durationWeeks !== undefined) {
+                    {{ p.durationWeeks }} week{{ p.durationWeeks === 1 ? '' : 's' }}
+                  } @else {
+                    N/A (dates not set)
+                  }
+                </span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <mat-icon class="info-icon">how_to_reg</mat-icon>
+              <div class="info-text">
+                <span class="label">Assigned On</span>
+                <span class="value">{{ p.assignedAt | date:'mediumDate' }}</span>
+              </div>
+            </div>
+
+          </div>
+        </mat-card-content>
+
+        <mat-card-footer>
+          <div class="card-footer">
+            <span class="project-id-badge">Project #{{ p.projectId }}</span>
+          </div>
+        </mat-card-footer>
+      </mat-card>
+    }
+  </div>
+</div>

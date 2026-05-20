@@ -1,0 +1,130 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2>Project Dashboard</h2>
+    <button mat-raised-button color="primary" (click)="load()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon> Refresh
+    </button>
+  </div>
+  <p class="subtitle">Overview of all projects with their assigned employees, dates, and staffing progress.</p>
+
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="mb-16"></mat-progress-bar>
+  }
+
+  @if (!loading && projects.length === 0) {
+    <mat-card class="empty-card">
+      <mat-card-content>
+        <mat-icon class="empty-icon">folder_open</mat-icon>
+        <p>No projects found. Create a project first.</p>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <mat-accordion multi>
+    @for (project of projects; track project.projectId) {
+      <mat-expansion-panel class="project-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="panel-icon">folder</mat-icon>
+            <span class="project-title">{{ project.projectName }}</span>
+            @if (project.domain) {
+              <span class="domain-badge">{{ project.domain }}</span>
+            }
+          </mat-panel-title>
+          <mat-panel-description>
+            <span class="staffing-info">
+              <mat-icon>group</mat-icon>
+              {{ project.assignedEmployees.length }} / {{ project.totalPositions || '?' }} staffed
+            </span>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Project meta row -->
+        <div class="project-meta">
+          <div class="meta-item">
+            <mat-icon>calendar_today</mat-icon>
+            <span><strong>Start:</strong> {{ project.startDate ? (project.startDate | date:'mediumDate') : 'Not set' }}</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>event</mat-icon>
+            <span><strong>End:</strong> {{ project.endDate ? (project.endDate | date:'mediumDate') : 'Not set' }}</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>how_to_reg</mat-icon>
+            <span><strong>Positions:</strong> {{ project.totalPositions }}</span>
+          </div>
+        </div>
+
+        <!-- Staffing progress bar -->
+        <div class="progress-section">
+          <span class="progress-label">Staffing Progress: {{ filledPercent(project) }}%</span>
+          <mat-progress-bar
+            mode="determinate"
+            [value]="filledPercent(project)"
+            [color]="filledPercent(project) >= 100 ? 'accent' : 'primary'">
+          </mat-progress-bar>
+        </div>
+
+        <!-- Assigned employees table -->
+        @if (project.assignedEmployees.length > 0) {
+          <div class="table-wrapper">
+            <table mat-table [dataSource]="project.assignedEmployees" class="emp-table">
+
+              <ng-container matColumnDef="employeeDbId">
+                <th mat-header-cell *matHeaderCellDef>Emp ID</th>
+                <td mat-cell *matCellDef="let a">
+                  <strong>{{ a.employeeDbId }}</strong>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="employeeName">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let a">{{ a.employeeName }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="experienceLevel">
+                <th mat-header-cell *matHeaderCellDef>Level</th>
+                <td mat-cell *matCellDef="let a">
+                  <span class="level-chip level-{{ a.experienceLevel?.toLowerCase() }}">
+                    {{ a.experienceLevel }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="availabilityStatus">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let a">
+                  <span class="status-chip status-{{ a.availabilityStatus?.toLowerCase() }}">
+                    {{ a.availabilityStatus }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="assignedAt">
+                <th mat-header-cell *matHeaderCellDef>Assigned On</th>
+                <td mat-cell *matCellDef="let a">{{ a.assignedAt | date:'mediumDate' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let a">
+                  <button mat-icon-button color="warn"
+                          (click)="unassign(a)"
+                          matTooltip="Unassign employee (marks them Available)">
+                    <mat-icon>person_remove</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="empColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: empColumns;"></tr>
+            </table>
+          </div>
+        } @else {
+          <p class="no-emp">No employees assigned to this project yet.</p>
+        }
+
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+</div>

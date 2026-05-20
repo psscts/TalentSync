@@ -27,8 +27,8 @@ function coerceStringArray(value, separator = /\s+/) {
 }
 
 export {
-  coerceBooleanProperty,
   coerceCssPixelValue,
+  coerceBooleanProperty,
   coerceStringArray
 };
-//# sourceMappingURL=chunk-JXBCBRYI.js.map
+//# sourceMappingURL=chunk-OJ4U43TX.js.map

@@ -25,4 +25,40 @@ export interface Project {
   domain?: string;
   locationPreferences?: string[];
   projectRequirements?: ProjectRequirement[];
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ProjectAssignment {
+  id: number;
+  projectId: number;
+  projectName: string;
+  employeeDbId: string;
+  employeeName: string;
+  experienceLevel?: string;
+  availabilityStatus?: string;
+  assignedAt: string;
+}
+
+export interface ProjectDashboard {
+  projectId: number;
+  projectName: string;
+  domain?: string;
+  startDate?: string;
+  endDate?: string;
+  totalPositions: number;
+  assignedEmployees: ProjectAssignment[];
+}
+
+export interface EmployeeProjectDto {
+  assignmentId: number;
+  projectId: number;
+  projectName: string;
+  domain?: string;
+  roleName?: string;
+  projectManagerName?: string;
+  startDate?: string;
+  endDate?: string;
+  durationWeeks?: number;
+  assignedAt: string;
 }

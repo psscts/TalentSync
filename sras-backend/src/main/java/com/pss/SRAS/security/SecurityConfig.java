@@ -39,6 +39,8 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/employees/**").authenticated()
                 .requestMatchers("/matching/**").hasRole("PROJECT_MANAGER")
+                .requestMatchers(HttpMethod.GET, "/assignments/my-projects").authenticated()
+                .requestMatchers("/assignments/**").hasRole("PROJECT_MANAGER")
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())

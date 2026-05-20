@@ -3159,6 +3159,7 @@ export {
   coerceArray,
   BreakpointObserver,
   ObserversModule,
+  InteractivityChecker,
   CdkTrapFocus,
   LiveAnnouncer,
   A11yModule,
@@ -3172,4 +3173,4 @@ export {
   MATERIAL_SANITY_CHECKS,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-IKLETB2S.js.map
+//# sourceMappingURL=chunk-GAIO4DI5.js.map

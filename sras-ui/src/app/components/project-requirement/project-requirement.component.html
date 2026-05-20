@@ -29,6 +29,16 @@
               <mat-error>Required</mat-error>
             </mat-form-field>
           </div>
+          <div class="form-row">
+            <mat-form-field>
+              <mat-label>Start Date</mat-label>
+              <input matInput type="date" formControlName="startDate">
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>End Date</mat-label>
+              <input matInput type="date" formControlName="endDate">
+            </mat-form-field>
+          </div>
 
           <div class="section-header mt-16">
             <strong>Location Preferences</strong>
@@ -75,6 +85,10 @@
           </mat-expansion-panel-header>
 
           <p><strong>Locations:</strong> {{ project.locationPreferences?.join(', ') || 'N/A' }}</p>
+          <p>
+            <strong>Start:</strong> {{ project.startDate ? (project.startDate | date:'mediumDate') : 'Not set' }} &nbsp;|&nbsp;
+            <strong>End:</strong> {{ project.endDate ? (project.endDate | date:'mediumDate') : 'Not set' }}
+          </p>
 
           <h4>Requirements</h4>
           @for (req of project.projectRequirements; track req.id) {
