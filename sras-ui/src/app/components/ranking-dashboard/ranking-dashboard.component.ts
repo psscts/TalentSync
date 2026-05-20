@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
@@ -11,12 +12,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { Employee } from '../../models/employee.model';
 import { EmployeeService } from '../../services/employee.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-ranking-dashboard',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
@@ -34,18 +37,31 @@ export class RankingDashboardComponent implements OnInit, AfterViewInit {
   displayedColumns = ['rank', 'employeeId', 'name', 'experienceLevel', 'yearsOfExperience',
                       'availabilityStatus', 'preferredLocation', 'previousRatings', 'employeeScore'];
   dataSource = new MatTableDataSource<Employee & { rank: number }>();
+  isEmployee = false;
+  profileIncomplete = false;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private employeeService: EmployeeService) {}
+  constructor(
+    private employeeService: EmployeeService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    const user = this.authService.currentUser();
+    this.isEmployee = !!user && !this.authService.isManager();
+
     this.employeeService.getAll().subscribe(employees => {
       const ranked = employees
         .sort((a, b) => (b.employeeScore ?? 0) - (a.employeeScore ?? 0))
         .map((emp, idx) => ({ ...emp, rank: idx + 1 }));
       this.dataSource.data = ranked;
+
+      if (this.isEmployee && user) {
+        const myProfile = employees.find((e: any) => e.user?.id === user.userId);
+        this.profileIncomplete = !myProfile || !myProfile.experienceLevel || myProfile.yearsOfExperience == null;
+      }
     });
   }
 

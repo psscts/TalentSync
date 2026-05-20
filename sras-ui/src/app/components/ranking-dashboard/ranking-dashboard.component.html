@@ -88,4 +88,10 @@
 
     <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
   </div>
+
+  <div class="complete-profile-banner" *ngIf="isEmployee && profileIncomplete">
+    <mat-icon>info_outline</mat-icon>
+    <span>Complete your details to view your ranking.</span>
+    <a mat-stroked-button color="primary" routerLink="/employees">Complete Profile</a>
+  </div>
 </div>

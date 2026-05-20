@@ -1,11 +1,44 @@
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 1px;
+  color: #eaf3ff;
+  text-decoration: none;
+}
+
+.logo-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #65c6a7;
+  box-shadow: 0 0 0 3px rgba(101, 198, 167, 0.22);
+}
+
+.app-toolbar {
+  background: linear-gradient(90deg, #112f52 0%, #1e4f7b 100%) !important;
+  color: #f5f9ff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
 }
 
 .spacer {
   flex: 1 1 auto;
+}
+
+// Fix MDC label alignment for all toolbar nav links
+a[mat-button], button[mat-button] {
+  ::ng-deep .mdc-button__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
 }
 
 .active-link {
@@ -15,44 +48,123 @@
 
 .main-content {
   min-height: calc(100vh - 64px);
+  padding-top: 64px;
 }
 
-.role-badge {
-  font-size: 10px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 2px 8px;
-  margin-left: 6px;
-  vertical-align: middle;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
+// ---- User menu trigger pill ----
 .user-menu-trigger {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 20px;
-  padding: 4px 12px;
-  cursor: pointer;
+  margin-left: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 24px;
+  padding: 4px 10px 4px 6px !important;
+  transition: background 150ms ease, border-color 150ms ease;
+
+  ::ng-deep .mdc-button__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .avatar-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    opacity: 0.92;
+  }
 
   .user-info {
     display: flex;
-    align-items: center;
-    gap: 4px;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.2;
   }
 
-  .dropdown-arrow {
+  .user-email {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #eaf3ff;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .role-badge {
+    font-size: 0.65rem;
+    background: rgba(101, 198, 167, 0.25);
+    color: #a8e6ce;
+    border-radius: 10px;
+    padding: 1px 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  .chevron-icon {
     font-size: 18px;
     width: 18px;
     height: 18px;
-    opacity: 0.8;
+    opacity: 0.7;
+    transition: transform 200ms ease;
   }
 
   &:hover {
-    border-color: rgba(255,255,255,0.6);
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.55);
+
+    .chevron-icon {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+// ---- Dropdown menu ----
+.menu-user-header {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px !important;
+  opacity: 1 !important;
+  cursor: default !important;
+
+  mat-icon {
+    color: #697c92;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .menu-email {
+    font-size: 0.82rem;
+    color: #44586f;
+    font-weight: 500;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.logout-item {
+  color: #c0392b !important;
+
+  mat-icon {
+    color: #c0392b !important;
+  }
+
+  &:hover {
+    background: rgba(192, 57, 43, 0.08) !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .main-content {
+    min-height: calc(100vh - 56px);
+    padding-top: 56px;
+  }
+
+  .user-email {
+    display: none;
   }
 }
 
