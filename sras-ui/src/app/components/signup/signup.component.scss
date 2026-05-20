@@ -33,7 +33,11 @@
 .form-body {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
+
+  .mat-mdc-form-field {
+    margin-bottom: 8px;
+  }
 }
 
 .signup-btn {

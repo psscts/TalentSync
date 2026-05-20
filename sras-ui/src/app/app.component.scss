@@ -1,7 +1,31 @@
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 1px;
+  color: #eaf3ff;
+  text-decoration: none;
+}
+
+.logo-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #65c6a7;
+  box-shadow: 0 0 0 3px rgba(101, 198, 167, 0.22);
+}
+
+.app-toolbar {
+  background: linear-gradient(90deg, #112f52 0%, #1e4f7b 100%) !important;
+  color: #f5f9ff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
 }
 
 .spacer {
@@ -15,6 +39,7 @@
 
 .main-content {
   min-height: calc(100vh - 64px);
+  padding-top: 64px;
 }
 
 .role-badge {
@@ -53,6 +78,13 @@
   &:hover {
     border-color: rgba(255,255,255,0.6);
     background: rgba(255,255,255,0.1);
+  }
+}
+
+@media (max-width: 599px) {
+  .main-content {
+    min-height: calc(100vh - 56px);
+    padding-top: 56px;
   }
 }
 

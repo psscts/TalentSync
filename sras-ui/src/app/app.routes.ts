@@ -3,7 +3,10 @@ import { authGuard } from './guards/auth.guard';
 import { managerGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  {
+    path: '',
+    loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)
+  },
   {
     path: 'login',
     loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
@@ -50,5 +53,5 @@ export const routes: Routes = [
     loadComponent: () => import('./components/manager-dashboard/manager-dashboard.component').then(m => m.ManagerDashboardComponent),
     canActivate: [managerGuard]
   },
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '' }
 ];

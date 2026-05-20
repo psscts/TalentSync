@@ -1,8 +1,11 @@
-@if (isLoggedIn()) {
-<mat-toolbar color="primary">
-  <span class="brand">SRAS</span>
+<mat-toolbar color="primary" class="app-toolbar">
+  <a class="brand" routerLink="/">
+    <span class="logo-dot" aria-hidden="true"></span>
+    <span>TalentSync</span>
+  </a>
   <span class="spacer"></span>
 
+  @if (isLoggedIn()) {
   @if (!isManager()) {
   <!-- Employee nav -->
   <a mat-button routerLink="/employees" routerLinkActive="active-link">
@@ -44,8 +47,8 @@
       <mat-icon>logout</mat-icon> Logout
     </button>
   </mat-menu>
+  }
 </mat-toolbar>
-}
 
 <main class="main-content">
   <router-outlet />
