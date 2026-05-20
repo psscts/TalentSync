@@ -6,7 +6,7 @@ import {
   Platform,
   coerceElement,
   coerceNumberProperty
-} from "./chunk-D5KE3ZP4.js";
+} from "./chunk-FOFWRIUE.js";
 import {
   BidiModule
 } from "./chunk-EHD43U2M.js";
@@ -3173,4 +3173,4 @@ export {
   MATERIAL_SANITY_CHECKS,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-AGYSRLB6.js.map
+//# sourceMappingURL=chunk-4XQCXXE5.js.map

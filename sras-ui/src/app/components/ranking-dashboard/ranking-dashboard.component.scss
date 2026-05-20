@@ -20,3 +20,26 @@ table {
   }
 }
 
+.complete-profile-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+  color: #5d4037;
+
+  mat-icon {
+    color: #f9a825;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+  }
+}
+
