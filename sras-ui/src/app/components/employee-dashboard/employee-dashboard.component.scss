@@ -1,132 +1,140 @@
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
 
-  h2 { margin: 0 0 4px 0; }
+    h2 {
+        margin: 0 0 4px 0;
+    }
 }
 
 .subtitle {
-  color: #757575;
-  margin: 0 0 24px 0;
+    color: #757575;
+    margin: 0 0 24px 0;
 }
 
-.mb-16 { margin-bottom: 16px; }
+.mb-16 {
+    margin-bottom: 16px;
+}
 
 .empty-card {
-  text-align: center;
-  padding: 40px 24px;
+    text-align: center;
+    padding: 40px 24px;
 
-  .empty-icon {
-    font-size: 56px;
-    height: 56px;
-    width: 56px;
-    color: #bdbdbd;
-    display: block;
-    margin: 0 auto 12px;
-  }
+    .empty-icon {
+        font-size: 56px;
+        height: 56px;
+        width: 56px;
+        color: #bdbdbd;
+        display: block;
+        margin: 0 auto 12px;
+    }
 
-  p { color: #9e9e9e; font-size: 15px; margin: 0; }
+    p {
+        color: #9e9e9e;
+        font-size: 15px;
+        margin: 0;
+    }
 }
 
 .cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
 }
 
 .project-card {
-  border-radius: 12px !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
-  transition: box-shadow 0.2s ease;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+    transition: box-shadow 0.2s ease;
 
-  &:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.13) !important;
-  }
+    &:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.13) !important;
+    }
 }
 
 .avatar-icon {
-  background: #e3f2fd;
-  color: #1976d2;
-  border-radius: 50%;
-  padding: 8px;
-  font-size: 24px;
-  height: 40px !important;
-  width: 40px !important;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
+    background: #e3f2fd;
+    color: #1976d2;
+    border-radius: 50%;
+    padding: 8px;
+    font-size: 24px;
+    height: 40px !important;
+    width: 40px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
 .divider {
-  margin: 12px 0 16px;
+    margin: 12px 0 16px;
 }
 
 .info-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .info-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
 }
 
 .info-icon {
-  font-size: 20px;
-  height: 20px;
-  width: 20px;
-  color: #1976d2;
-  margin-top: 2px;
-  flex-shrink: 0;
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    color: #1976d2;
+    margin-top: 2px;
+    flex-shrink: 0;
 }
 
 .info-text {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-  .label {
-    font-size: 11px;
-    color: #9e9e9e;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    line-height: 1.2;
-  }
+    .label {
+        font-size: 11px;
+        color: #9e9e9e;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+    }
 
-  .value {
-    font-size: 14px;
-    color: #212121;
-    font-weight: 500;
-    margin-top: 1px;
-  }
+    .value {
+        font-size: 14px;
+        color: #212121;
+        font-weight: 500;
+        margin-top: 1px;
+    }
 }
 
 .role-value {
-  color: #1565c0;
-  background: #e3f2fd;
-  border-radius: 10px;
-  padding: 1px 10px;
-  display: inline-block;
-  margin-top: 2px;
-  font-size: 13px !important;
+    color: #1565c0;
+    background: #e3f2fd;
+    border-radius: 10px;
+    padding: 1px 10px;
+    display: inline-block;
+    margin-top: 2px;
+    font-size: 13px !important;
 }
 
 .duration-value {
-  color: #2e7d32;
-  font-weight: 600 !important;
+    color: #2e7d32;
+    font-weight: 600 !important;
 }
 
 .card-footer {
-  padding: 8px 16px 12px;
+    padding: 8px 16px 12px;
 }
 
 .project-id-badge {
-  font-size: 11px;
-  color: #9e9e9e;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 2px 8px;
+    font-size: 11px;
+    color: #9e9e9e;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 2px 8px;
 }

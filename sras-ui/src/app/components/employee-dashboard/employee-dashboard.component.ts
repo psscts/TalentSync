@@ -11,45 +11,45 @@ import { ProjectService } from '../../services/project.service';
 import { EmployeeProjectDto } from '../../models/project.model';
 
 @Component({
-  selector: 'app-employee-dashboard',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressBarModule,
-    MatSnackBarModule,
-    MatDividerModule,
-    MatChipsModule
-  ],
-  templateUrl: './employee-dashboard.component.html',
-  styleUrl: './employee-dashboard.component.scss'
+    selector: 'app-employee-dashboard',
+    standalone: true,
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressBarModule,
+        MatSnackBarModule,
+        MatDividerModule,
+        MatChipsModule
+    ],
+    templateUrl: './employee-dashboard.component.html',
+    styleUrl: './employee-dashboard.component.scss'
 })
 export class EmployeeDashboardComponent implements OnInit {
-  projects: EmployeeProjectDto[] = [];
-  loading = false;
+    projects: EmployeeProjectDto[] = [];
+    loading = false;
 
-  constructor(
-    private projectService: ProjectService,
-    private snackBar: MatSnackBar
-  ) {}
+    constructor(
+        private projectService: ProjectService,
+        private snackBar: MatSnackBar
+    ) { }
 
-  ngOnInit(): void {
-    this.load();
-  }
+    ngOnInit(): void {
+        this.load();
+    }
 
-  load(): void {
-    this.loading = true;
-    this.projectService.getMyProjects().subscribe({
-      next: data => {
-        this.projects = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-        this.snackBar.open('Failed to load your project assignments', 'Close', { duration: 3000 });
-      }
-    });
-  }
+    load(): void {
+        this.loading = true;
+        this.projectService.getMyProjects().subscribe({
+            next: data => {
+                this.projects = data;
+                this.loading = false;
+            },
+            error: () => {
+                this.loading = false;
+                this.snackBar.open('Failed to load your project assignments', 'Close', { duration: 3000 });
+            }
+        });
+    }
 }

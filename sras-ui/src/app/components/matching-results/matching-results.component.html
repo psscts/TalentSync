@@ -9,18 +9,17 @@
           <mat-label>Select Project</mat-label>
           <mat-select formControlName="projectId">
             @for (p of projects; track p.id) {
-              <mat-option [value]="p.id">{{ p.projectName }}</mat-option>
+            <mat-option [value]="p.id">{{ p.projectName }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
 
         <mat-form-field class="k-field">
-          <mat-label>Top K</mat-label>
+          <mat-label>Top</mat-label>
           <input matInput type="number" formControlName="k" min="1" max="100">
         </mat-form-field>
 
-        <button mat-raised-button color="primary" type="submit"
-                [disabled]="form.invalid || loading">
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
           <mat-icon>group_work</mat-icon>
           Find Best Matches
         </button>
@@ -29,94 +28,92 @@
   </mat-card>
 
   @if (loading) {
-    <mat-progress-bar mode="indeterminate" class="mb-16"></mat-progress-bar>
+  <mat-progress-bar mode="indeterminate" class="mb-16"></mat-progress-bar>
   }
 
   @if (searched && !loading) {
-    <h3>
-      Top {{ dataSource.data.length }} matches for "{{ selectedProjectName() }}"
-    </h3>
+  <h3>
+    Top {{ dataSource.data.length }} matches for "{{ selectedProjectName() }}"
+  </h3>
 
-    <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort>
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort>
 
-        <ng-container matColumnDef="rank">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
-          <td mat-cell *matCellDef="let r">{{ r.rank }}</td>
-        </ng-container>
+      <ng-container matColumnDef="rank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+        <td mat-cell *matCellDef="let r">{{ r.rank }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="employeeDbId">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Emp ID</th>
-          <td mat-cell *matCellDef="let r">{{ r.employeeDbId }}</td>
-        </ng-container>
+      <ng-container matColumnDef="employeeDbId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Emp ID</th>
+        <td mat-cell *matCellDef="let r">{{ r.employeeDbId }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-          <td mat-cell *matCellDef="let r">{{ r.name }}</td>
-        </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+        <td mat-cell *matCellDef="let r">{{ r.name }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="experienceLevel">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Level</th>
-          <td mat-cell *matCellDef="let r">{{ r.experienceLevel }}</td>
-        </ng-container>
+      <ng-container matColumnDef="experienceLevel">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Level</th>
+        <td mat-cell *matCellDef="let r">{{ r.experienceLevel }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="yearsOfExperience">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Yrs Exp</th>
-          <td mat-cell *matCellDef="let r">{{ r.yearsOfExperience }}</td>
-        </ng-container>
+      <ng-container matColumnDef="yearsOfExperience">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Yrs Exp</th>
+        <td mat-cell *matCellDef="let r">{{ r.yearsOfExperience }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="availabilityStatus">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Availability</th>
-          <td mat-cell *matCellDef="let r">{{ r.availabilityStatus }}</td>
-        </ng-container>
+      <ng-container matColumnDef="availabilityStatus">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Availability</th>
+        <td mat-cell *matCellDef="let r">{{ r.availabilityStatus }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="preferredLocation">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Location</th>
-          <td mat-cell *matCellDef="let r">{{ r.preferredLocation }}</td>
-        </ng-container>
+      <ng-container matColumnDef="preferredLocation">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Location</th>
+        <td mat-cell *matCellDef="let r">{{ r.preferredLocation }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="employeeScore">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Emp Score</th>
-          <td mat-cell *matCellDef="let r">
-            <span class="score-chip" [ngClass]="scoreClass(r.employeeScore ?? 0)">
-              {{ r.employeeScore | number:'1.1-1' }}
-            </span>
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="employeeScore">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Emp Score</th>
+        <td mat-cell *matCellDef="let r">
+          <span class="score-chip" [ngClass]="scoreClass(r.employeeScore ?? 0)">
+            {{ r.employeeScore | number:'1.1-1' }}
+          </span>
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="matchingScore">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Match Score</th>
-          <td mat-cell *matCellDef="let r">
-            <span class="score-chip" [ngClass]="scoreClass(r.matchingScore)">
-              {{ r.matchingScore | number:'1.1-1' }}
-            </span>
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="matchingScore">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Match Score</th>
+        <td mat-cell *matCellDef="let r">
+          <span class="score-chip" [ngClass]="scoreClass(r.matchingScore)">
+            {{ r.matchingScore | number:'1.1-1' }}
+          </span>
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Action</th>
-          <td mat-cell *matCellDef="let r">
-            <button mat-stroked-button color="primary"
-                    [disabled]="r.assigned"
-                    (click)="assignEmployee(r)"
-                    matTooltip="Assign this employee to the selected project">
-              <mat-icon>person_add</mat-icon>
-              {{ r.assigned ? 'Assigned' : 'Assign' }}
-            </button>
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let r">
+          <button mat-stroked-button color="primary" [disabled]="r.assigned" (click)="assignEmployee(r)"
+            matTooltip="Assign this employee to the selected project">
+            <mat-icon>person_add</mat-icon>
+            {{ r.assigned ? 'Assigned' : 'Assign' }}
+          </button>
+        </td>
+      </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
-            No matching employees found.
-          </td>
-        </tr>
-      </table>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+          No matching employees found.
+        </td>
+      </tr>
+    </table>
 
-      <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
-    </div>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+  </div>
   }
 </div>

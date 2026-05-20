@@ -71,7 +71,7 @@ export class ProjectRequirementComponent implements OnInit {
     private fb: FormBuilder,
     private projectService: ProjectService,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
 
   ngOnInit(): void { this.loadProjects(); }
 

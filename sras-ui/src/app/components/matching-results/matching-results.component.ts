@@ -49,8 +49,8 @@ export class MatchingResultsComponent implements OnInit, AfterViewInit {
   searched = false;
 
   displayedColumns = ['rank', 'employeeDbId', 'name', 'experienceLevel',
-                      'yearsOfExperience', 'availabilityStatus', 'preferredLocation',
-                      'employeeScore', 'matchingScore', 'actions'];
+    'yearsOfExperience', 'availabilityStatus', 'preferredLocation',
+    'employeeScore', 'matchingScore', 'actions'];
 
   form = this.fb.group({
     projectId: [null as number | null, Validators.required],
@@ -65,7 +65,7 @@ export class MatchingResultsComponent implements OnInit, AfterViewInit {
     private matchingService: MatchingService,
     private projectService: ProjectService,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.projectService.getAll().subscribe(p => this.projects = p);

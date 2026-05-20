@@ -10,6 +10,7 @@ import com.pss.SRAS.models.enums.AvailabilityStatus;
 import com.pss.SRAS.repositories.EmployeeRepository;
 import com.pss.SRAS.repositories.ProjectAssignmentRepository;
 import com.pss.SRAS.repositories.ProjectRepository;
+import com.pss.SRAS.repositories.ProjectRequirementRepository;
 import com.pss.SRAS.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +30,7 @@ public class AssignmentService {
     private final ProjectAssignmentRepository assignmentRepository;
     private final ProjectRepository projectRepository;
     private final EmployeeRepository employeeRepository;
+    private final ProjectRequirementRepository requirementRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -83,10 +85,9 @@ public class AssignmentService {
                     .map(a -> toDtoWithProject(a, project))
                     .collect(Collectors.toList());
 
-            int totalPositions = project.getProjectRequirements() == null ? 0 :
-                    project.getProjectRequirements().stream()
-                            .mapToInt(r -> r.getNumberOfPositions() != null ? r.getNumberOfPositions() : 0)
-                            .sum();
+            int totalPositions = requirementRepository.findByProjectId(project.getId()).stream()
+                    .mapToInt(r -> r.getNumberOfPositions() != null ? r.getNumberOfPositions() : 0)
+                    .sum();
 
             return new ProjectDashboardDto(
                     project.getId(),

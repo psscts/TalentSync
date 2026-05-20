@@ -9,7 +9,7 @@ export class ProjectService {
   private readonly apiUrl = `${environment.apiUrl}/projects`;
   private readonly assignUrl = `${environment.apiUrl}/assignments`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll(): Observable<Project[]> {
     return this.http.get<Project[]>(this.apiUrl);
