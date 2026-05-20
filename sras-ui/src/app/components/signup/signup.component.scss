@@ -39,9 +39,25 @@
 .signup-btn {
   padding: 10px 0;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 8px;
   margin-top: 12px;
+  background-color: #3f51b5 !important;
+  color: #fff !important;
+  box-shadow: 0 3px 8px rgba(63, 81, 181, 0.3);
+  letter-spacing: 0.5px;
+  height: 44px;
+
+  &:hover {
+    background-color: #303f9f !important;
+    box-shadow: 0 4px 12px rgba(63, 81, 181, 0.4);
+  }
+
+  &:disabled {
+    background-color: #c5cae9 !important;
+    color: #fff !important;
+    box-shadow: none;
+  }
 }
 
 .login-link {
