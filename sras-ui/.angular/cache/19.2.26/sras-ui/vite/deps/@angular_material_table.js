@@ -5,7 +5,8 @@ import "./chunk-JXBCBRYI.js";
 import {
   ScrollingModule,
   ViewportRuler
-} from "./chunk-G623IX7B.js";
+} from "./chunk-JVO6QURF.js";
+import "./chunk-2O4WY5GE.js";
 import {
   DataSource,
   _RecycleViewRepeaterStrategy,
@@ -13,7 +14,6 @@ import {
   _ViewRepeaterOperation,
   isDataSource
 } from "./chunk-JKVJFAOK.js";
-import "./chunk-2O4WY5GE.js";
 import {
   MatCommonModule
 } from "./chunk-AGYSRLB6.js";
