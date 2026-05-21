@@ -4,6 +4,12 @@ Thumbs.db
 .Spotlight-V100
 .Trashes
 
+# Stop tracking the file without deleting it from your computer
+git rm --cached sras-ui/.angular/cache/19.2.26/sras-ui/.tsbuildinfo
+
+# Add the cache directory to your .gitignore file
+echo "sras-ui/.angular/" >> .gitignore
+
 # --- Build and Dependency Folders (Recursive) ---
 # Adding a / at the end ensures it matches folders only
 node_modules/

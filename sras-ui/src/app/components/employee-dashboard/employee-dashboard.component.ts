@@ -9,6 +9,7 @@ import { ToastService } from '../../services/toast.service';
 import { MatChipsModule } from '@angular/material/chips';
 import { ProjectService } from '../../services/project.service';
 import { EmployeeProjectDto } from '../../models/project.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-employee-dashboard',
@@ -45,10 +46,34 @@ export class EmployeeDashboardComponent implements OnInit {
                 this.projects = data;
                 this.loading = false;
             },
-            error: () => {
+            error: (err: HttpErrorResponse) => {
                 this.loading = false;
-                this.toast.error('Failed to load your project assignments');
+                this.toast.error(this.resolveError(err));
             }
         });
+    }
+
+    private resolveError(err: HttpErrorResponse): string {
+        const serverMsg: string | undefined =
+            err.error?.message ?? err.error?.error ?? undefined;
+
+        switch (err.status) {
+            case 0:
+                return 'Cannot reach the server. Please check that the backend is running on port 8081.';
+            case 401:
+                return 'Your session has expired or you are not logged in. Please log in again.';
+            case 403:
+                return 'You do not have permission to view project assignments.';
+            case 404:
+                return 'No assignment data found for your account (404). Your employee profile may not be linked to a user account yet.';
+            case 500:
+                return serverMsg
+                    ? `Server error while loading assignments: ${serverMsg}`
+                    : 'An internal server error occurred while loading your assignments. Please try again later.';
+            default:
+                return serverMsg
+                    ? `Failed to load project assignments: ${serverMsg} (HTTP ${err.status})`
+                    : `Failed to load project assignments (HTTP ${err.status}). Please try again.`;
+        }
     }
 }
