@@ -6,9 +6,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -21,8 +22,8 @@ import { AuthService } from '../../services/auth.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss'
@@ -38,7 +39,7 @@ export class ForgotPasswordComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   submit(): void {
@@ -48,11 +49,11 @@ export class ForgotPasswordComponent {
       next: (res) => {
         this.loading = false;
         this.resetToken = res.token;
-        this.snackBar.open('Reset token generated! Use it to reset your password.', 'Close', { duration: 5000 });
+        this.toast.success('Reset token generated! Use it to reset your password.', 5000);
       },
       error: err => {
         this.loading = false;
-        this.snackBar.open(err.error?.message ?? 'Email not found', 'Close', { duration: 3000 });
+        this.toast.error(err.error?.message ?? 'Email not found');
       }
     });
   }

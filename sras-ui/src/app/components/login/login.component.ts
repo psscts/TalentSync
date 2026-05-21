@@ -8,8 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -23,8 +23,7 @@ import { AuthService } from '../../services/auth.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatProgressSpinnerModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -41,7 +40,7 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   submit(): void {
@@ -54,7 +53,7 @@ export class LoginComponent {
       },
       error: err => {
         this.loading = false;
-        this.snackBar.open(err.error?.message ?? 'Login failed', 'Close', { duration: 3000 });
+        this.toast.error(err.error?.message ?? 'Login failed');
       }
     });
   }

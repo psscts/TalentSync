@@ -72,29 +72,12 @@ a[mat-button], button[mat-button] {
     opacity: 0.92;
   }
 
-  .user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    line-height: 1.2;
-  }
-
-  .user-email {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #eaf3ff;
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   .role-badge {
     font-size: 0.65rem;
     background: rgba(101, 198, 167, 0.25);
     color: #a8e6ce;
     border-radius: 10px;
-    padding: 1px 6px;
+    padding: 2px 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;

@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import { ToastService } from '../../services/toast.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -28,7 +28,6 @@ import { Employee } from '../../models/employee.model';
     MatButtonModule,
     MatSelectModule,
     MatIconModule,
-    MatSnackBarModule,
     MatDividerModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
@@ -61,7 +60,7 @@ export class EmployeeFormComponent implements OnInit {
     private fb: FormBuilder,
     private employeeService: EmployeeService,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -134,14 +133,11 @@ export class EmployeeFormComponent implements OnInit {
         this.existingEmployee = saved;
         this.patchForm(saved);
         this.viewMode = true;  // go back to view mode after saving
-        this.snackBar.open(
-          'Profile saved!',
-          'Close', { duration: 2500 }
-        );
+        this.toast.success('Profile saved!');
       },
       error: err => {
         this.saving = false;
-        this.snackBar.open(err.error?.message ?? 'Error saving profile', 'Close', { duration: 3000 });
+        this.toast.error(err.error?.message ?? 'Error saving profile');
       }
     });
   }

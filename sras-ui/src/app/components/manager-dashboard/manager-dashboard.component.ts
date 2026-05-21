@@ -8,8 +8,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ToastService } from '../../services/toast.service';
 import { ProjectService } from '../../services/project.service';
 import { ProjectDashboard, ProjectAssignment } from '../../models/project.model';
 
@@ -26,7 +26,6 @@ import { ProjectDashboard, ProjectAssignment } from '../../models/project.model'
         MatExpansionModule,
         MatBadgeModule,
         MatProgressBarModule,
-        MatSnackBarModule,
         MatTooltipModule
     ],
     templateUrl: './manager-dashboard.component.html',
@@ -40,7 +39,7 @@ export class ManagerDashboardComponent implements OnInit {
 
     constructor(
         private projectService: ProjectService,
-        private snackBar: MatSnackBar
+        private toast: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -56,7 +55,7 @@ export class ManagerDashboardComponent implements OnInit {
             },
             error: () => {
                 this.loading = false;
-                this.snackBar.open('Failed to load dashboard', 'Close', { duration: 3000 });
+                this.toast.error('Failed to load dashboard');
             }
         });
     }
@@ -64,11 +63,11 @@ export class ManagerDashboardComponent implements OnInit {
     unassign(assignment: ProjectAssignment): void {
         this.projectService.unassignEmployee(assignment.id).subscribe({
             next: () => {
-                this.snackBar.open(`${assignment.employeeName} unassigned successfully`, 'Close', { duration: 3000 });
+                this.toast.success(`${assignment.employeeName} unassigned successfully`);
                 this.load();
             },
             error: err => {
-                this.snackBar.open(err.error?.message ?? 'Unassign failed', 'Close', { duration: 3000 });
+                this.toast.error(err.error?.message ?? 'Unassign failed');
             }
         });
     }

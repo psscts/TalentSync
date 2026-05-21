@@ -4,8 +4,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import { ToastService } from '../../services/toast.service';
 import { MatChipsModule } from '@angular/material/chips';
 import { ProjectService } from '../../services/project.service';
 import { EmployeeProjectDto } from '../../models/project.model';
@@ -19,7 +19,6 @@ import { EmployeeProjectDto } from '../../models/project.model';
         MatButtonModule,
         MatIconModule,
         MatProgressBarModule,
-        MatSnackBarModule,
         MatDividerModule,
         MatChipsModule
     ],
@@ -32,7 +31,7 @@ export class EmployeeDashboardComponent implements OnInit {
 
     constructor(
         private projectService: ProjectService,
-        private snackBar: MatSnackBar
+        private toast: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -48,7 +47,7 @@ export class EmployeeDashboardComponent implements OnInit {
             },
             error: () => {
                 this.loading = false;
-                this.snackBar.open('Failed to load your project assignments', 'Close', { duration: 3000 });
+                this.toast.error('Failed to load your project assignments');
             }
         });
     }

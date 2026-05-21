@@ -8,10 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { ToastService } from '../../services/toast.service';
 import { ProjectService } from '../../services/project.service';
 import { Project, ProjectRequirement, Role } from '../../models/project.model';
 
@@ -28,9 +27,7 @@ import { Project, ProjectRequirement, Role } from '../../models/project.model';
     MatSelectModule,
     MatIconModule,
     MatTableModule,
-    MatExpansionModule,
-    MatChipsModule,
-    MatSnackBarModule,
+    MatTooltipModule,
     MatDividerModule
   ],
   templateUrl: './project-requirement.component.html',
@@ -41,6 +38,8 @@ export class ProjectRequirementComponent implements OnInit {
   editingId: number | null = null;
   loading = false;
   showProjectForm = false;
+  showReqForm = false;
+  selectedProjectId: number | null = null;
 
   form = this.fb.group({
     projectName: ['', Validators.required],
@@ -70,14 +69,36 @@ export class ProjectRequirementComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private projectService: ProjectService,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) { }
 
-  ngOnInit(): void { this.loadProjects(); }
+  ngOnInit(): void {
+    this.loadProjects();
+
+    // Reset location whenever the selected project changes
+    this.reqForm.get('projectId')!.valueChanges.subscribe(() => {
+      this.reqForm.get('location')!.reset();
+    });
+  }
 
   toggleProjectForm(): void {
     this.showProjectForm = !this.showProjectForm;
     if (!this.showProjectForm) this.resetProjectForm();
+  }
+
+  openCreateForm(): void {
+    this.resetProjectForm();
+    this.showProjectForm = true;
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+  }
+
+  openReqForm(projectId: number): void {
+    this.selectedProjectId = projectId;
+    this.showReqForm = true;
+    this.reqForm.patchValue({ projectId });
+    setTimeout(() => {
+      document.getElementById('req-form-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   }
 
   get locations() { return this.form.get('locationPreferences') as FormArray; }
@@ -118,13 +139,13 @@ export class ProjectRequirementComponent implements OnInit {
       next: () => {
         this.loading = false;
         this.showProjectForm = false;
-        this.snackBar.open(this.editingId ? 'Project updated' : 'Project created', 'Close', { duration: 2500 });
+        this.toast.success(this.editingId ? 'Project updated' : 'Project created', 2500);
         this.resetProjectForm();
         this.loadProjects();
       },
       error: err => {
         this.loading = false;
-        this.snackBar.open(err.error?.message ?? 'Error', 'Close', { duration: 3000 });
+        this.toast.error(err.error?.message ?? 'Error');
       }
     });
   }
@@ -139,13 +160,14 @@ export class ProjectRequirementComponent implements OnInit {
 
     this.projectService.addRequirement(projectId!, req).subscribe({
       next: () => {
-        this.snackBar.open('Requirement added', 'Close', { duration: 2500 });
-        this.reqForm.reset({ numberOfPositions: 1 });
+        this.toast.success('Requirement added', 2500);
+        this.reqForm.patchValue({ projectId: this.selectedProjectId, numberOfPositions: 1 });
+        this.reqForm.get('location')!.reset();
         this.reqSkills.clear();
         this.reqCerts.clear();
         this.loadProjects();
       },
-      error: err => this.snackBar.open(err.error?.message ?? 'Error', 'Close', { duration: 3000 })
+      error: err => this.toast.error(err.error?.message ?? 'Error')
     });
   }
 
@@ -163,18 +185,19 @@ export class ProjectRequirementComponent implements OnInit {
     p.locationPreferences?.forEach((loc, i) => {
       (this.locations.at(i) as any).setValue(loc);
     });
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   }
 
   deleteProject(id: number): void {
     if (!confirm('Delete project?')) return;
     this.projectService.delete(id).subscribe({
-      next: () => { this.snackBar.open('Deleted', 'Close', { duration: 2000 }); this.loadProjects(); }
+      next: () => { this.toast.success('Deleted', 2000); this.loadProjects(); }
     });
   }
 
   deleteRequirement(reqId: number): void {
     this.projectService.deleteRequirement(reqId).subscribe({
-      next: () => { this.snackBar.open('Requirement removed', 'Close', { duration: 2000 }); this.loadProjects(); }
+      next: () => { this.toast.success('Requirement removed', 2000); this.loadProjects(); }
     });
   }
 

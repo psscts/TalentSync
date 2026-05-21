@@ -1,53 +1,292 @@
+// --- Page shell ---
 .page-container {
-  max-width: 960px;
-  margin: 24px auto;
-  padding: 0 16px;
+  max-width: 1000px;
+  margin: 28px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
-.page-header {
+// --- Step card ---
+.step-card {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 2px 14px rgba(15, 42, 74, 0.08);
+  border: 1px solid #e3e8f0;
+  padding: 28px 28px 24px;
+}
+
+.step-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.step-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1d466f;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-
-  h2 { margin: 0; }
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
-.form-card {
-  border-left: 4px solid #3f51b5;
+.step-info {
+  flex: 1;
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f2a4a;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #697c92;
+  }
 }
 
-.empty-card {
-  background: #fafafa;
+.step-action-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.step-hint {
+  font-size: 0.88rem;
+  color: #697c92;
+  margin: -8px 0 0;
+  padding: 12px 16px;
+  background: #f4f7fb;
+  border-radius: 8px;
+  border-left: 3px solid #7986cb;
+}
+
+// --- Inner form card ---
+.inner-form-card {
+  border-left: 4px solid #3f51b5 !important;
+  background: #fafbff !important;
+  margin-top: 8px;
+  border-radius: 10px !important;
+}
+
+// --- Empty state ---
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 52px 24px;
+  border-radius: 10px;
+  border: 2px dashed #c5cae9;
   text-align: center;
-  p { color: #888; margin: 8px 0; }
+
+  .empty-icon {
+    font-size: 56px;
+    width: 56px;
+    height: 56px;
+    color: #9fa8da;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #37474f;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #78909c;
+    font-size: 0.9rem;
+  }
 }
 
+// --- Project cards grid ---
+.project-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.project-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e3e8f0;
+  box-shadow: 0 2px 10px rgba(15, 42, 74, 0.07);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: box-shadow 0.18s ease, transform 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 6px 22px rgba(15, 42, 74, 0.13);
+    transform: translateY(-2px);
+  }
+}
+
+.project-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.project-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1d466f, #0f2a4a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    color: #fff;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.project-card-title-block {
+  h3 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f2a4a;
+  }
+}
+
+.domain-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #3f51b5;
+  background: #e8eaf6;
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.project-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 0.82rem;
+  color: #44586f;
+
+  mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+    color: #7986cb;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+}
+
+// --- Requirement chips on project cards ---
+.req-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.req-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8f5e9;
+  color: #1b5e20;
+  border-radius: 6px;
+  padding: 4px 8px 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.req-chip-del {
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
+  padding: 0 !important;
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: #c62828;
+  }
+}
+
+.no-req {
+  font-size: 0.82rem;
+  color: #9e9e9e;
+  font-style: italic;
+  margin: 0;
+}
+
+// --- Project card action buttons ---
+.project-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #f0f2f5;
+}
+
+// --- Shared form helpers ---
 .form-row {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
+  margin-bottom: 4px;
 
   mat-form-field { flex: 1; min-width: 180px; }
 }
 
-.section-header {
+.sub-section-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #44586f;
+  margin: 16px 0 10px;
+}
+
+.section-sub-header {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 8px;
 
-  strong {
-    min-width: 160px;
-  }
+  strong { min-width: 160px; font-size: 0.9rem; }
 }
 
 .chips-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 8px;
-  padding-left: 0;
+  margin-bottom: 10px;
 
   .location-field, .chip-field {
     width: 200px;
@@ -58,47 +297,9 @@
 .form-actions {
   display: flex;
   gap: 12px;
+  margin-top: 8px;
 }
 
-.panel-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.req-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.no-req {
-  color: #9e9e9e;
-  font-style: italic;
-}
-
+// --- Utilities ---
 .mb-24 { margin-bottom: 24px; }
 .mt-8  { margin-top: 8px; }
-.mt-16 { margin-top: 16px; }
-
-/* Highlight invalid fields when touched */
-:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched {
-  .mdc-notched-outline__leading,
-  .mdc-notched-outline__notch,
-  .mdc-notched-outline__trailing {
-    border-color: #f44336 !important;
-    border-width: 2px !important;
-  }
-
-  .mdc-line-ripple::before,
-  .mdc-line-ripple::after {
-    border-bottom-color: #f44336 !important;
-    border-bottom-width: 2px !important;
-  }
-
-  label, .mat-mdc-floating-label {
-    color: #f44336 !important;
-  }
-}

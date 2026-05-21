@@ -10,9 +10,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Employee } from '../../models/employee.model';
 import { EmployeeService } from '../../services/employee.service';
 import { AuthService } from '../../services/auth.service';
+
+type RankedEmployee = Employee & { rank: number };
 
 @Component({
   selector: 'app-ranking-dashboard',
@@ -28,17 +32,23 @@ import { AuthService } from '../../services/auth.service';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTooltipModule,
+    MatProgressBarModule
   ],
   templateUrl: './ranking-dashboard.component.html',
   styleUrl: './ranking-dashboard.component.scss'
 })
 export class RankingDashboardComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['rank', 'employeeId', 'name', 'experienceLevel', 'yearsOfExperience',
+  displayedColumns = ['rank', 'name', 'experienceLevel', 'yearsOfExperience',
                       'availabilityStatus', 'preferredLocation', 'previousRatings', 'employeeScore'];
-  dataSource = new MatTableDataSource<Employee & { rank: number }>();
+  dataSource = new MatTableDataSource<RankedEmployee>();
   isEmployee = false;
   profileIncomplete = false;
+  myRank: number | null = null;
+  myProfile: RankedEmployee | null = null;
+  topThree: RankedEmployee[] = [];
+  totalCount = 0;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -53,14 +63,20 @@ export class RankingDashboardComponent implements OnInit, AfterViewInit {
     this.isEmployee = !!user && !this.authService.isManager();
 
     this.employeeService.getAll().subscribe(employees => {
-      const ranked = employees
+      const ranked: RankedEmployee[] = employees
         .sort((a, b) => (b.employeeScore ?? 0) - (a.employeeScore ?? 0))
         .map((emp, idx) => ({ ...emp, rank: idx + 1 }));
       this.dataSource.data = ranked;
+      this.topThree = ranked.slice(0, 3);
+      this.totalCount = ranked.length;
 
       if (this.isEmployee && user) {
-        const myProfile = employees.find((e: any) => e.user?.id === user.userId);
-        this.profileIncomplete = !myProfile || !myProfile.experienceLevel || myProfile.yearsOfExperience == null;
+        const mine = ranked.find((e: any) => e.user?.id === user.userId);
+        this.profileIncomplete = !mine || !mine.experienceLevel || mine.yearsOfExperience == null;
+        if (mine) {
+          this.myRank = mine.rank;
+          this.myProfile = mine;
+        }
       }
     });
   }
@@ -84,8 +100,30 @@ export class RankingDashboardComponent implements OnInit, AfterViewInit {
   }
 
   scoreClass(score: number): string {
-    if (score >= 70) return 'high';
-    if (score >= 40) return 'medium';
-    return 'low';
+    if (score >= 70) return 'score-high';
+    if (score >= 40) return 'score-mid';
+    return 'score-low';
+  }
+
+  levelClass(level: string | undefined): string {
+    return (level ?? '').toLowerCase();
+  }
+
+  availClass(status: string | undefined): string {
+    switch (status) {
+      case 'AVAILABLE': return 'avail';
+      case 'PARTIALLY_AVAILABLE': return 'partial';
+      default: return 'unavail';
+    }
+  }
+
+  initials(name: string): string {
+    return name.split(' ').map(p => p[0]).join('').substring(0, 2).toUpperCase();
+  }
+
+  medalIcon(rank: number): string {
+    if (rank === 1) return '🥇';
+    if (rank === 2) return '🥈';
+    return '🥉';
   }
 }
