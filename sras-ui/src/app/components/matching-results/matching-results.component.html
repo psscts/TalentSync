@@ -34,7 +34,15 @@
   @if (searched && !loading) {
   <h3>
     Top {{ dataSource.data.length }} matches for "{{ selectedProjectName() }}"
+    <span class="positions-badge">{{ assignedCount }} / {{ totalPositions }} filled</span>
   </h3>
+
+  @if (projectFull) {
+  <div class="project-full-banner">
+    <mat-icon>lock</mat-icon>
+    All {{ totalPositions }} position(s) for this project are filled. No more employees can be assigned.
+  </div>
+  }
 
   <div class="table-container">
     <table mat-table [dataSource]="dataSource" matSort>
@@ -95,10 +103,10 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Action</th>
         <td mat-cell *matCellDef="let r">
-          <button mat-stroked-button color="primary" [disabled]="r.assigned" (click)="assignEmployee(r)"
-            matTooltip="Assign this employee to the selected project">
+          <button mat-stroked-button color="primary" [disabled]="r.assigned || projectFull" (click)="assignEmployee(r)"
+            [matTooltip]="projectFull ? 'All positions for this project are filled' : 'Assign this employee to the selected project'">
             <mat-icon>person_add</mat-icon>
-            {{ r.assigned ? 'Assigned' : 'Assign' }}
+            {{ r.assigned ? 'Assigned' : (projectFull ? 'Project Full' : 'Assign') }}
           </button>
         </td>
       </ng-container>

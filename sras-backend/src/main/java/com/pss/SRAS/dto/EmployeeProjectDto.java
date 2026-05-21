@@ -13,7 +13,7 @@ public class EmployeeProjectDto {
     private String projectName;
     private String domain;
     private String roleName;
-    private String projectManagerName;
+    private String projectManagerUsername; // full login email of the manager
     private LocalDate startDate;
     private LocalDate endDate;
     private Long durationWeeks;

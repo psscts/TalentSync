@@ -6,6 +6,7 @@ import com.pss.SRAS.dto.ProjectDashboardDto;
 import com.pss.SRAS.models.Employee;
 import com.pss.SRAS.models.Project;
 import com.pss.SRAS.models.ProjectAssignment;
+import com.pss.SRAS.models.User;
 import com.pss.SRAS.models.enums.AvailabilityStatus;
 import com.pss.SRAS.repositories.EmployeeRepository;
 import com.pss.SRAS.repositories.ProjectAssignmentRepository;
@@ -34,7 +35,7 @@ public class AssignmentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public AssignmentResponseDto assignEmployee(Long projectId, Long employeeId) {
+    public AssignmentResponseDto assignEmployee(Long projectId, Long employeeId, String managerEmail) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new NoSuchElementException("Project not found: " + projectId));
         Employee employee = employeeRepository.findById(employeeId)
@@ -44,12 +45,24 @@ public class AssignmentService {
             throw new IllegalArgumentException("Employee already assigned to this project");
         }
 
+        // Enforce position capacity from project requirements
+        int totalPositions = requirementRepository.findByProjectId(projectId).stream()
+                .mapToInt(r -> r.getNumberOfPositions() != null ? r.getNumberOfPositions() : 0)
+                .sum();
+        int currentAssigned = assignmentRepository.findByProjectId(projectId).size();
+        if (totalPositions > 0 && currentAssigned >= totalPositions) {
+            throw new IllegalStateException("All " + totalPositions + " position(s) for this project are already filled.");
+        }
+
+        User manager = userRepository.findByEmail(managerEmail).orElse(null);
+
         employee.setAvailabilityStatus(AvailabilityStatus.UNAVAILABLE);
         employeeRepository.save(employee);
 
         ProjectAssignment assignment = ProjectAssignment.builder()
                 .project(project)
                 .employee(employee)
+                .assignedBy(manager)
                 .assignedAt(LocalDate.now())
                 .build();
         ProjectAssignment saved = assignmentRepository.save(assignment);
@@ -77,8 +90,10 @@ public class AssignmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProjectDashboardDto> getDashboard() {
-        return projectRepository.findAll().stream().map(project -> {
+    public List<ProjectDashboardDto> getDashboard(String managerEmail) {
+        var user = userRepository.findByEmail(managerEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + managerEmail));
+        return projectRepository.findByManagerOrUnowned(user.getId()).stream().map(project -> {
             List<AssignmentResponseDto> assignments = assignmentRepository
                     .findByProjectId(project.getId())
                     .stream()
@@ -120,7 +135,10 @@ public class AssignmentService {
                         .map(r -> r.getRole().getName())
                         .orElse("N/A");
 
-            String managerName = (p.getProjectManager() != null) ? p.getProjectManager().getName() : "N/A";
+            String managerEmail = (a.getAssignedBy() != null)
+                    ? a.getAssignedBy().getEmail()
+                    : (p.getProjectManager() != null ? p.getProjectManager().getEmail() : null);
+            String managerUsername = (managerEmail != null) ? managerEmail : "N/A";
 
             Long weeks = null;
             if (p.getStartDate() != null && p.getEndDate() != null) {
@@ -133,7 +151,7 @@ public class AssignmentService {
                     p.getProjectName(),
                     p.getDomain(),
                     roleName,
-                    managerName,
+                    managerUsername,
                     p.getStartDate(),
                     p.getEndDate(),
                     weeks,
