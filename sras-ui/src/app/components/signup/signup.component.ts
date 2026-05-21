@@ -38,8 +38,8 @@ export class SignupComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [
       Validators.required,
-      Validators.minLength(8),
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/)
+      Validators.minLength(6),
+      Validators.pattern(/^(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/)
     ]],
     role: ['EMPLOYEE', Validators.required]
   });
