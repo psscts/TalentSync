@@ -52,9 +52,16 @@ public class GlobalExceptionHandler {
                 .body(new ApiError(400, ex.getMessage()));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiError> handleIllegalState(IllegalStateException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ApiError(400, ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex) {
+        String msg = ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiError(500, "An unexpected error occurred"));
+                .body(new ApiError(500, msg != null ? msg : "An unexpected error occurred"));
     }
 }

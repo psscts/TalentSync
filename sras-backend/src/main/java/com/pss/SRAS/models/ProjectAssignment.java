@@ -29,6 +29,10 @@ public class ProjectAssignment {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "assigned_by_user_id")
+    private User assignedBy;
+
     @Column(nullable = false)
     private LocalDate assignedAt;
 }

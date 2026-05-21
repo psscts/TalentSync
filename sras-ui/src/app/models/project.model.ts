@@ -56,7 +56,7 @@ export interface EmployeeProjectDto {
   projectName: string;
   domain?: string;
   roleName?: string;
-  projectManagerName?: string;
+  projectManagerUsername?: string;
   startDate?: string;
   endDate?: string;
   durationWeeks?: number;

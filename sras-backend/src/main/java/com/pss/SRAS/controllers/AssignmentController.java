@@ -23,8 +23,8 @@ public class AssignmentController {
     /** POST /assignments — assign an employee to a project */
     @PostMapping
     @PreAuthorize("hasRole('PROJECT_MANAGER')")
-    public ResponseEntity<AssignmentResponseDto> assign(@RequestBody AssignmentRequest request) {
-        return ResponseEntity.ok(assignmentService.assignEmployee(request.getProjectId(), request.getEmployeeId()));
+    public ResponseEntity<AssignmentResponseDto> assign(@RequestBody AssignmentRequest request, Authentication authentication) {
+        return ResponseEntity.ok(assignmentService.assignEmployee(request.getProjectId(), request.getEmployeeId(), authentication.getName()));
     }
 
     /** DELETE /assignments/{id} — unassign, restores employee to AVAILABLE */
@@ -45,8 +45,8 @@ public class AssignmentController {
     /** GET /assignments/dashboard — manager dashboard */
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('PROJECT_MANAGER')")
-    public ResponseEntity<List<ProjectDashboardDto>> getDashboard() {
-        return ResponseEntity.ok(assignmentService.getDashboard());
+    public ResponseEntity<List<ProjectDashboardDto>> getDashboard(Authentication authentication) {
+        return ResponseEntity.ok(assignmentService.getDashboard(authentication.getName()));
     }
 
     /** GET /assignments/my-projects — employee's own assigned projects */
