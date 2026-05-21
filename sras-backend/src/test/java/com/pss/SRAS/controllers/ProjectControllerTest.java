@@ -17,24 +17,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * MockMVC tests for ProjectController.
- * Uses standalone setup — ProjectService is mocked, no database required.
- * Security annotations (@PreAuthorize) are not enforced in standalone mode;
- * only controller logic and error handling are tested.
- */
 @ExtendWith(MockitoExtension.class)
 class ProjectControllerTest {
 
@@ -85,15 +80,20 @@ class ProjectControllerTest {
         return req;
     }
 
+    private UsernamePasswordAuthenticationToken managerAuth() {
+        return new UsernamePasswordAuthenticationToken("mgr@example.com", null,
+                List.of(new SimpleGrantedAuthority("ROLE_PROJECT_MANAGER")));
+    }
+
     // ── GET /projects ─────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("GET /projects - returns 200 with all projects")
     void getAll_returnsProjectList() throws Exception {
-        when(projectService.getAllProjects()).thenReturn(
+        when(projectService.getProjectsForManager(anyString())).thenReturn(
                 List.of(buildProject(1L, "Alpha"), buildProject(2L, "Beta")));
 
-        mockMvc.perform(get("/projects"))
+        mockMvc.perform(get("/projects").principal(managerAuth()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].projectName").value("Alpha"))
@@ -103,9 +103,9 @@ class ProjectControllerTest {
     @Test
     @DisplayName("GET /projects - empty: returns 200 with empty array")
     void getAll_empty() throws Exception {
-        when(projectService.getAllProjects()).thenReturn(List.of());
+        when(projectService.getProjectsForManager(anyString())).thenReturn(List.of());
 
-        mockMvc.perform(get("/projects"))
+        mockMvc.perform(get("/projects").principal(managerAuth()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
@@ -142,11 +142,12 @@ class ProjectControllerTest {
     void create_success() throws Exception {
         Project req = buildProject(null, "Gamma");
         Project saved = buildProject(3L, "Gamma");
-        when(projectService.create(any(Project.class))).thenReturn(saved);
+        when(projectService.create(any(Project.class), anyString())).thenReturn(saved);
 
         mockMvc.perform(post("/projects")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
+                        .content(objectMapper.writeValueAsString(req))
+                        .principal(managerAuth()))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/projects/3"))
                 .andExpect(jsonPath("$.id").value(3))
@@ -159,11 +160,12 @@ class ProjectControllerTest {
     @DisplayName("PUT /projects/{id} - returns 200 with updated project")
     void update_success() throws Exception {
         Project updated = buildProject(1L, "Alpha Revised");
-        when(projectService.update(eq(1L), any(Project.class))).thenReturn(updated);
+        when(projectService.update(eq(1L), any(Project.class), anyString())).thenReturn(updated);
 
         mockMvc.perform(put("/projects/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updated)))
+                        .content(objectMapper.writeValueAsString(updated))
+                        .principal(managerAuth()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.projectName").value("Alpha Revised"));
     }
@@ -171,12 +173,13 @@ class ProjectControllerTest {
     @Test
     @DisplayName("PUT /projects/{id} - not found: returns 404")
     void update_notFound() throws Exception {
-        when(projectService.update(eq(99L), any(Project.class)))
+        when(projectService.update(eq(99L), any(Project.class), anyString()))
                 .thenThrow(new NoSuchElementException("Project not found: 99"));
 
         mockMvc.perform(put("/projects/99")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(buildProject(99L, "Ghost"))))
+                        .content(objectMapper.writeValueAsString(buildProject(99L, "Ghost")))
+                        .principal(managerAuth()))
                 .andExpect(status().isNotFound());
     }
 
@@ -185,21 +188,21 @@ class ProjectControllerTest {
     @Test
     @DisplayName("DELETE /projects/{id} - returns 204 No Content")
     void delete_success() throws Exception {
-        doNothing().when(projectService).delete(1L);
+        doNothing().when(projectService).delete(eq(1L), anyString());
 
-        mockMvc.perform(delete("/projects/1"))
+        mockMvc.perform(delete("/projects/1").principal(managerAuth()))
                 .andExpect(status().isNoContent());
 
-        verify(projectService).delete(1L);
+        verify(projectService).delete(eq(1L), anyString());
     }
 
     @Test
     @DisplayName("DELETE /projects/{id} - not found: returns 404")
     void delete_notFound() throws Exception {
         doThrow(new NoSuchElementException("Project not found: 99"))
-                .when(projectService).delete(99L);
+                .when(projectService).delete(eq(99L), anyString());
 
-        mockMvc.perform(delete("/projects/99"))
+        mockMvc.perform(delete("/projects/99").principal(managerAuth()))
                 .andExpect(status().isNotFound());
     }
 
@@ -225,11 +228,12 @@ class ProjectControllerTest {
     void addRequirement_success() throws Exception {
         ProjectRequirement req = buildRequirement(null);
         ProjectRequirement saved = buildRequirement(10L);
-        when(projectService.addRequirement(eq(1L), any(ProjectRequirement.class))).thenReturn(saved);
+        when(projectService.addRequirement(eq(1L), any(ProjectRequirement.class), anyString())).thenReturn(saved);
 
         mockMvc.perform(post("/projects/1/requirements")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
+                        .content(objectMapper.writeValueAsString(req))
+                        .principal(managerAuth()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10))
                 .andExpect(jsonPath("$.numberOfPositions").value(3));
@@ -242,11 +246,12 @@ class ProjectControllerTest {
     void updateRequirement_success() throws Exception {
         ProjectRequirement updated = buildRequirement(10L);
         updated.setNumberOfPositions(5);
-        when(projectService.updateRequirement(eq(10L), any(ProjectRequirement.class))).thenReturn(updated);
+        when(projectService.updateRequirement(eq(10L), any(ProjectRequirement.class), anyString())).thenReturn(updated);
 
         mockMvc.perform(put("/projects/requirements/10")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updated)))
+                        .content(objectMapper.writeValueAsString(updated))
+                        .principal(managerAuth()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfPositions").value(5));
     }
@@ -256,21 +261,21 @@ class ProjectControllerTest {
     @Test
     @DisplayName("DELETE /projects/requirements/{reqId} - returns 204 No Content")
     void deleteRequirement_success() throws Exception {
-        doNothing().when(projectService).deleteRequirement(10L);
+        doNothing().when(projectService).deleteRequirement(eq(10L), anyString());
 
-        mockMvc.perform(delete("/projects/requirements/10"))
+        mockMvc.perform(delete("/projects/requirements/10").principal(managerAuth()))
                 .andExpect(status().isNoContent());
 
-        verify(projectService).deleteRequirement(10L);
+        verify(projectService).deleteRequirement(eq(10L), anyString());
     }
 
     @Test
     @DisplayName("DELETE /projects/requirements/{reqId} - not found: returns 404")
     void deleteRequirement_notFound() throws Exception {
         doThrow(new NoSuchElementException("Requirement not found: 99"))
-                .when(projectService).deleteRequirement(99L);
+                .when(projectService).deleteRequirement(eq(99L), anyString());
 
-        mockMvc.perform(delete("/projects/requirements/99"))
+        mockMvc.perform(delete("/projects/requirements/99").principal(managerAuth()))
                 .andExpect(status().isNotFound());
     }
 }

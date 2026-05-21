@@ -26,20 +26,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * MockMVC tests for AssignmentController.
- * Uses standalone setup — AssignmentService is mocked, no database required.
- * Security annotations (@PreAuthorize) are not enforced in standalone mode.
- * The getMyProjects endpoint uses Spring Security test support to supply
- * an Authentication principal via the request's user principal.
- */
 @ExtendWith(MockitoExtension.class)
 class AssignmentControllerTest {
 
@@ -96,11 +87,12 @@ class AssignmentControllerTest {
         req.setEmployeeId(10L);
 
         AssignmentResponseDto resp = buildAssignmentDto(100L, 1L, "EMP010");
-        when(assignmentService.assignEmployee(1L, 10L)).thenReturn(resp);
+        when(assignmentService.assignEmployee(eq(1L), eq(10L), anyString())).thenReturn(resp);
 
         mockMvc.perform(post("/assignments")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
+                        .content(objectMapper.writeValueAsString(req))
+                        .principal(new UsernamePasswordAuthenticationToken("mgr@example.com", null, List.of())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(100))
                 .andExpect(jsonPath("$.projectId").value(1))
@@ -115,12 +107,13 @@ class AssignmentControllerTest {
         req.setProjectId(1L);
         req.setEmployeeId(10L);
 
-        when(assignmentService.assignEmployee(1L, 10L))
+        when(assignmentService.assignEmployee(eq(1L), eq(10L), anyString()))
                 .thenThrow(new IllegalArgumentException("Employee already assigned to this project"));
 
         mockMvc.perform(post("/assignments")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
+                        .content(objectMapper.writeValueAsString(req))
+                        .principal(new UsernamePasswordAuthenticationToken("mgr@example.com", null, List.of())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Employee already assigned to this project"));
     }
@@ -132,12 +125,13 @@ class AssignmentControllerTest {
         req.setProjectId(99L);
         req.setEmployeeId(10L);
 
-        when(assignmentService.assignEmployee(99L, 10L))
+        when(assignmentService.assignEmployee(eq(99L), eq(10L), anyString()))
                 .thenThrow(new NoSuchElementException("Project not found: 99"));
 
         mockMvc.perform(post("/assignments")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
+                        .content(objectMapper.writeValueAsString(req))
+                        .principal(new UsernamePasswordAuthenticationToken("mgr@example.com", null, List.of())))
                 .andExpect(status().isNotFound());
     }
 
@@ -203,9 +197,10 @@ class AssignmentControllerTest {
                 buildDashboardDto(1L, "Alpha", 4, assigned),
                 buildDashboardDto(2L, "Beta", 2, List.of())
         );
-        when(assignmentService.getDashboard()).thenReturn(dashboard);
+        when(assignmentService.getDashboard(anyString())).thenReturn(dashboard);
 
-        mockMvc.perform(get("/assignments/dashboard"))
+        mockMvc.perform(get("/assignments/dashboard")
+                        .principal(new UsernamePasswordAuthenticationToken("mgr@example.com", null, List.of())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].projectName").value("Alpha"))
@@ -218,9 +213,10 @@ class AssignmentControllerTest {
     @Test
     @DisplayName("GET /assignments/dashboard - no projects: returns 200 with empty list")
     void getDashboard_empty() throws Exception {
-        when(assignmentService.getDashboard()).thenReturn(List.of());
+        when(assignmentService.getDashboard(anyString())).thenReturn(List.of());
 
-        mockMvc.perform(get("/assignments/dashboard"))
+        mockMvc.perform(get("/assignments/dashboard")
+                        .principal(new UsernamePasswordAuthenticationToken("mgr@example.com", null, List.of())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
@@ -242,7 +238,7 @@ class AssignmentControllerTest {
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].projectName").value("Project Alpha"))
                 .andExpect(jsonPath("$[0].roleName").value("Backend Developer"))
-                .andExpect(jsonPath("$[0].projectManagerName").value("Manager Bob"))
+                .andExpect(jsonPath("$[0].projectManagerUsername").value("Manager Bob"))
                 .andExpect(jsonPath("$[0].durationWeeks").value(30));
     }
 
