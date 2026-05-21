@@ -12,6 +12,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { forkJoin } from 'rxjs';
 import { ToastService } from '../../services/toast.service';
 import { MatchingService } from '../../services/matching.service';
 import { ProjectService } from '../../services/project.service';
@@ -46,6 +47,12 @@ export class MatchingResultsComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<MatchingRow>();
   loading = false;
   searched = false;
+  totalPositions = 0;
+  assignedCount = 0;
+
+  get projectFull(): boolean {
+    return this.totalPositions > 0 && this.assignedCount >= this.totalPositions;
+  }
 
   displayedColumns = ['rank', 'employeeDbId', 'name', 'experienceLevel',
     'yearsOfExperience', 'availabilityStatus', 'preferredLocation',
@@ -81,11 +88,20 @@ export class MatchingResultsComponent implements OnInit, AfterViewInit {
     this.loading = true;
     this.searched = false;
 
-    this.matchingService.getTopK(projectId!, k!).subscribe({
-      next: results => {
+    forkJoin({
+      matches: this.matchingService.getTopK(projectId!, k!),
+      requirements: this.projectService.getRequirements(projectId!),
+      assignments: this.projectService.getAssignmentsByProject(projectId!)
+    }).subscribe({
+      next: ({ matches, requirements, assignments }) => {
         this.loading = false;
         this.searched = true;
-        this.dataSource.data = results.map((r, i) => ({ ...r, rank: i + 1, assigned: false }));
+        this.totalPositions = requirements.reduce((s, r) => s + (r.numberOfPositions ?? 0), 0);
+        this.assignedCount = assignments.length;
+        const assignedIds = new Set(assignments.map((a: any) => a.employeeDbId));
+        this.dataSource.data = matches.map((r, i) => ({
+          ...r, rank: i + 1, assigned: assignedIds.has(r.employeeDbId)
+        }));
       },
       error: err => {
         this.loading = false;
@@ -101,10 +117,8 @@ export class MatchingResultsComponent implements OnInit, AfterViewInit {
       next: () => {
         row.assigned = true;
         row.availabilityStatus = 'UNAVAILABLE';
-        // Refresh the table data to remove this employee from future searches
+        this.assignedCount++;
         this.toast.success(`${row.name} assigned successfully`);
-        // Re-search to hide the newly assigned employee
-        this.search();
       },
       error: err => {
         this.toast.error(err.error?.message ?? 'Assignment failed');

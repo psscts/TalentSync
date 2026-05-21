@@ -55,9 +55,9 @@
                     <mat-icon>how_to_reg</mat-icon>
                     <span><strong>Positions:</strong>
                         @if (project.totalPositions > 0) {
-                        {{ (project.assignedEmployees?.length ?? 0) }} filled / {{ project.totalPositions }} total
+                        {{ project.assignedEmployees.length }} filled / {{ project.totalPositions }} total
                         } @else {
-                        {{ (project.assignedEmployees?.length ?? 0) }} assigned (no positions defined)
+                        {{ project.assignedEmployees.length }} assigned (no positions defined)
                         }
                     </span>
                 </div>
@@ -67,7 +67,7 @@
             <div class="progress-section">
                 <span class="progress-label">
                     Staffing Progress: {{ filledPercent(project) }}%
-                    @if ((project.totalPositions ?? 0) <= 0) { <span class="no-positions-hint">(set positions on project
+                    @if (project.totalPositions <= 0) { <span class="no-positions-hint">(set positions on project
                         requirements for accurate tracking)</span>
                 }
                 </span>
