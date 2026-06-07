@@ -41,7 +41,12 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router,
     private toast: ToastService
-  ) {}
+  ) {
+    // Redirect to home if already logged in
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/']);
+    }
+  }
 
   submit(): void {
     if (this.form.invalid) return;

@@ -16,10 +16,12 @@
         certifications, availability and experience — giving managers ranked,
         data-driven recommendations instantly.
       </p>
-      <div class="hero-actions">
-        <a mat-raised-button routerLink="/login" class="btn-primary">Get Started</a>
-        <a mat-stroked-button routerLink="/signup" class="btn-outline">Create Account</a>
-      </div>
+      @if (!authService.isLoggedIn()) {
+        <div class="hero-actions">
+          <a mat-raised-button routerLink="/login" class="btn-primary">Get Started</a>
+          <a mat-stroked-button routerLink="/signup" class="btn-outline">Create Account</a>
+        </div>
+      }
 
      
     </div>
@@ -140,15 +142,17 @@
   </section>
 
   <!-- ── FOOTER CTA ── -->
-  <section class="cta-banner">
-    <div class="cta-content">
-      <h2>Ready to streamline your staffing?</h2>
-      <p>Create an account and start matching talent to projects today.</p>
-      <div class="cta-actions">
-        <a mat-raised-button routerLink="/signup" class="btn-primary">Sign Up Free</a>
-        <a mat-button routerLink="/login" class="btn-text">Already have an account? Sign In →</a>
+  @if (!authService.isLoggedIn()) {
+    <section class="cta-banner">
+      <div class="cta-content">
+        <h2>Ready to streamline your staffing?</h2>
+        <p>Create an account and start matching talent to projects today.</p>
+        <div class="cta-actions">
+          <a mat-raised-button routerLink="/signup" class="btn-primary">Sign Up Free</a>
+          <a mat-button routerLink="/login" class="btn-text">Already have an account? Sign In →</a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  }
 
 </div>
