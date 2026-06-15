@@ -16,6 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "https://talent-sync-ten.vercel.app")
 public class AuthController {
 
     private final AuthService authService;
