@@ -1,0 +1,6 @@
+.m2
+.env
+target/
+test_output.log
+.idea/
+./vscode
